@@ -1,13 +1,1 @@
-title: WebLogic on Azure IaaS
-description: > # this means to ignore newlines until "baseurl:"
-  Documentation for WebLogic on Azure IaaS
-github_username:  wls-eng
-baseurl: "/arm-oraclelinux-wls" # the subpath of your site, e.g. /blog
-timezone: America/New_York
-# Build settings
-markdown: kramdown
-theme: jekyll-theme-minimal
-kramdown:
-  parse_block_html: true
-  toc_levels: 1..3
-exclude: ["target", "#*#", ".#_config.yml"]
+theme: jekyll-theme-cayman
