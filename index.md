@@ -1,5 +1,6 @@
 ---
 title:  "Using WebLogic Server (Oracle Linux x86-64) on {{ site.data.var.azureFullBrandName }}"
+metatags: refresh
 ---
 
 # Using {{ site.data.var.wlsFullBrandName }} (Oracle Linux x86-64) on {{ site.data.var.azureFullBrandName }}
