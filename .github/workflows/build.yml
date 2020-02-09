@@ -36,7 +36,18 @@ jobs:
       - name: Build azure-javaee-iaas
         run: mvn -DskipTests clean install --file azure-javaee-iaas/pom.xml
       - name: Built and test arm-oraclelinux-wls
-        run: mvn -Ptemplate-validation-tests clean install --file arm-oraclelinux-wls/pom.xml  
+        run: mvn -Ptemplate-validation-tests clean install --file arm-oraclelinux-wls/pom.xml
+
+      - name: Get Service Principal as environment variable
+        id: get-service-principal-as-environment-variable
+        run: |
+          export AZURE_CREDENTIALS=`az ad sp create-for-rbac --verbose --role contributor --scopes /subscriptions/${{ secrets.subscriptionId }} --sdk-auth`
+        shell: bash
+
+      - name: Delete Service Principal
+        id: delete-service-principal
+        run: |
+          az ad sp delete --id `echo ${AZURE_CREDENTIALS} | jq --raw-output '.clientId'`
         
       - name: Get version information from pom.xml
         id: version
