@@ -12,7 +12,6 @@ on:
   repository_dispatch:
 
 env:
-  resourceGroup: ${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
   location: eastus
     
 jobs:
@@ -49,6 +48,7 @@ jobs:
       - name: Create Resource Group
         id: create-resource-group
         run: |
+          export resourceGroup=${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
           echo ${resourceGroup} ${location}
           az group create --verbose --name ${resourceGroup} --location ${location}
       - name: Get version information from pom.xml
