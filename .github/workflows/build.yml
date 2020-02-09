@@ -86,7 +86,12 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Delete Resource Group
+        id: delete-resource-group
+        run: |
           export resourceGroup=${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
           echo ${resourceGroup} ${location}
           az group delete --yes --no-wait --verbose --name ${resourceGroup}
