@@ -82,7 +82,9 @@ jobs:
           path: ${{steps.artifact_path.outputs.artifactPath}}
 
   cleanup:
+    needs: build
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - run: |
-          az group delete --verbose --name ${resourceGroup}
+          az group delete --yes --no-wait --verbose --name ${resourceGroup}
