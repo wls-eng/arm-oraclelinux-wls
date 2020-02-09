@@ -49,6 +49,7 @@ jobs:
       - name: Create Resource Group
         id: create-resource-group
         run: |
+          echo ${resourceGroup} ${location}
           az group create --verbose --name ${resourceGroup} --location ${location}
       - name: Get version information from pom.xml
         id: version
