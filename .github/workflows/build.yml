@@ -83,8 +83,5 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     steps:
-      - env:
-          resourceGroup: ${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
-          location: eastus
       - run: |
           az group delete --verbose --name ${resourceGroup}
