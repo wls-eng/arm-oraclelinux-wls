@@ -11,13 +11,14 @@ on:
       - cron:  '0 7 * * *'
   repository_dispatch:
 
+env:
+  resourceGroup: ${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
+  location: eastus
+    
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - env:
-          resourceGroup: ${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
-          location: eastus
       - name: Checkout azure-javaee-iaas
         uses: actions/checkout@v2
         with:
@@ -85,7 +86,5 @@ jobs:
       - env:
           resourceGroup: ${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
           location: eastus
-      - name: Delete Resource Group
-        id: delete-resource-group
-        run: |
+      - run: |
           az group delete --verbose --name ${resourceGroup}
