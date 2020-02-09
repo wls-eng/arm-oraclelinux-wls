@@ -12,7 +12,7 @@ on:
   repository_dispatch:
 
 jobs:
-  build:
+  prepare:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout azure-javaee-iaas
@@ -33,6 +33,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+  build-and-unit-test:
+    runs-on: ubuntu-latest
+    steps:
       - name: Build azure-javaee-iaas
         run: mvn -DskipTests clean install --file azure-javaee-iaas/pom.xml
       - name: Built and test arm-oraclelinux-wls
