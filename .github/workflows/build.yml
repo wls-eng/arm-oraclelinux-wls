@@ -15,6 +15,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - env:
+          resourceGroup: ${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
+          location: eastus
       - name: Checkout azure-javaee-iaas
         uses: actions/checkout@v2
         with:
@@ -38,17 +41,14 @@ jobs:
       - name: Built and test arm-oraclelinux-wls
         run: mvn -Ptemplate-validation-tests clean install --file arm-oraclelinux-wls/pom.xml
 
-      - name: Get Service Principal as environment variable
-        id: get-service-principal-as-environment-variable
-        run: |
-          export AZURE_CREDENTIALS=`az ad sp create-for-rbac --verbose --role contributor --scopes /subscriptions/${{ secrets.subscriptionId }} --sdk-auth`
-        shell: bash
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Delete Service Principal
-        id: delete-service-principal
+      - name: Create Resource Group
+        id: create-resource-group
         run: |
-          az ad sp delete --id `echo ${AZURE_CREDENTIALS} | jq --raw-output '.clientId'`
-        
+          az group create --verbose --name ${resourceGroup} --location ${location}
       - name: Get version information from pom.xml
         id: version
         run: echo "##[set-env name=version;]$(awk '/<version>[^<]+<\/version>/{gsub(/<version>|<\/version>/,"",$1);print $1;exit;}' arm-oraclelinux-wls/pom.xml)"
@@ -78,3 +78,14 @@ jobs:
         with:
           name: ${{steps.artifact_file.outputs.artifactName}}
           path: ${{steps.artifact_path.outputs.artifactPath}}
+
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          resourceGroup: ${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
+          location: eastus
+      - name: Delete Resource Group
+        id: delete-resource-group
+        run: |
+          az group delete --verbose --name ${resourceGroup}
