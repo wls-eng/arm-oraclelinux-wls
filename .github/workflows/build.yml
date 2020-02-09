@@ -87,4 +87,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
+          export resourceGroup=${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
+          echo ${resourceGroup} ${location}
           az group delete --yes --no-wait --verbose --name ${resourceGroup}
