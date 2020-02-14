@@ -19,7 +19,7 @@ jobs:
         with:
           repository: Azure/azure-javaee-iaas
           path: azure-javaee-iaas 
-      - name: Checkout arm-ttk
+      - name: Checkout Azure Resource Manager Template Toolkit
         uses: actions/checkout@v2
         with:
           repository: Azure/arm-ttk
