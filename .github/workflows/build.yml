@@ -38,26 +38,22 @@ jobs:
         run: mvn -Ptemplate-validation-tests clean install --file arm-oraclelinux-wls/pom.xml  
         
       - name: Get version information from pom.xml
-        id: version
-        run: echo "##[set-env name=version;]$(awk '/<version>[^<]+<\/version>/{gsub(/<version>|<\/version>/,"",$1);print $1;exit;}' arm-oraclelinux-wls/pom.xml)"
-      - name: Print version
-        run: echo $version 
-        
-      - name: Generate artifact name         
-        run: echo "##[set-env name=artifactName;]arm-oraclelinux-wls-$version-arm-assembly"  
-      - name: Print artifact name
-        run: echo $artifactName
-      - name: Output artifact name
+        run: |
+         echo "##[set-env name=version;]$(awk '/<version>[^<]+<\/version>/{gsub(/<version>|<\/version>/,"",$1);print $1;exit;}' arm-oraclelinux-wls/pom.xml)"
+         echo $version
+
+      - name: Generate artifact name           
+        run: |
+         echo "##[set-env name=artifactName;]arm-oraclelinux-wls-$version-arm-assembly" 
+         echo $artifactName
+      - name: Output artifact name and path
         id: artifact_file
-        run: echo "##[set-output name=artifactName;]arm-oraclelinux-wls-$version-arm-assembly"
-      - name: Generate zip package path
-        id: artifact_path
-        run: echo "##[set-output name=artifactPath;]arm-oraclelinux-wls/target/$artifactName"
-      - name: Output artifact path
-        run: echo $artifactPath
-        env: 
-          artifactPath: ${{steps.package.outputs.artifactPath}}
+        run: |
+         echo "##[set-output name=artifactName;]arm-oraclelinux-wls-$version-arm-assembly"
+         echo "##[set-output name=artifactPath;]arm-oraclelinux-wls/target/$artifactName"
+      
       - name: Unzip the package as upload action will zip again 
+        if: success()
         run: unzip arm-oraclelinux-wls/target/$artifactName.zip -d arm-oraclelinux-wls/target/$artifactName
         
       - name: Archive ${{steps.artifact_file.outputs.artifactName}}.zip
@@ -65,4 +61,4 @@ jobs:
         if: success()
         with:
           name: ${{steps.artifact_file.outputs.artifactName}}
-          path: ${{steps.artifact_path.outputs.artifactPath}}
+          path: ${{steps.artifact_file.outputs.artifactPath}}
