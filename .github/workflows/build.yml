@@ -60,7 +60,7 @@ jobs:
       - name: Unzip the package as upload action will zip again 
         run: unzip arm-oraclelinux-wls/target/$artifactName.zip -d arm-oraclelinux-wls/target/$artifactName
         
-      - name: Archive arm-oraclelinux-wls target
+      - name: Archive ${{steps.artifact_file.outputs.artifactName}}.zip
         uses: actions/upload-artifact@v1 
         if: success()
         with:
