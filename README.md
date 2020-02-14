@@ -15,7 +15,7 @@ So, when this template is run, user will be required to accept the <a href="http
 * Install Apache Maven.  This project uses Apache Maven to do simple
   string substitution for several required parameters in the templates.
   
-* Git clone [Azure Java EE IaaS](https://github.com/edburns/azure-javaee-iaas) and `mvn clean
+* Git clone [Azure Java EE IaaS](https://github.com/Azure/azure-javaee-iaas) and `mvn clean
   install` to get the some required dependencies into your local maven repo.
   
 * From the top level run `mvn clean install`.
@@ -62,33 +62,28 @@ If you are new to template deployment, see:
 
 <h3>Running the tests</h3>
 
-Microsoft provides template validation tests in the Git repo for Azure-Quickstart-Templates.  This project has maven configuration to run those tests against the ARM template.  This is useful when building the template as part of a CI/CD pipeline.
+Microsoft provides template validation tests in the Git repo for Azure Resource Manager Template Toolkit.  This project has maven configuration to run those tests against the ARM template.  This is useful when building the template as part of a CI/CD pipeline.
 
 <h4>Preconditions</h4>
 
 The environment running the tests must have the git repo for 
-[Azure Quickstart Templates](https://github.com/Azure/azure-quickstart-templates) checked
+[Azure Resource Manager Template Toolkit](https://github.com/Azure/arm-ttk) checked
 out in the expected place, and the necessary powershell software installed
 
 1. Make it so the environment that runs `mvn` is able to execute the powershell command.
 
-2. Git clone the Azure Quickstart Templates into the same directory
+2. Git clone Azure Resource Manager Template Toolkit into the same directory
    where this repo is/will be located.  In other words, the test repo is
-   a sibling of this repo.  **Due to issues with the tests at the time of
-   release, you must check out the tag `2019-10-29-01` of [this
-   fork](https://github.com/edburns/azure-quickstart-templates/tree/2019-10-29-01).**
+   a sibling of this repo.
 
 <h4>Running the tests</h4>
-
-1. run `mvn install` in the top level directory.  **Do not run `mvn
-   clean` as this will delete the directory from step 3 above**
    
-2. Change to `arm-oraclelinux-wls` and run `mvn -Dgit.repo=edburns -Ptemplate-validation-tests install`
+1. Change to `arm-oraclelinux-wls` and run `mvn -Ptemplate-validation-tests clean install`
 
-3. The template validation tests should run.  You must see no failures, signified by lines that start with `[-]`
+2. The template validation tests should run.  You must see no failures, signified by lines that start with `[-]`
    tests and some large number of passing tests: `[+]`.
    
-4. The zip file to upload to the Cloud Partner Portal is located in the
+3. The zip file to upload to the Cloud Partner Portal is located in the
    target directory.
 
 ## Updating the Versions
