@@ -9,7 +9,11 @@ on:
       - master
   schedule:
       - cron:  '0 7 * * *'
+  repository_dispatch:
 
+env:
+  location: eastus
+    
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,8 +40,18 @@ jobs:
       - name: Build azure-javaee-iaas
         run: mvn -DskipTests clean install --file azure-javaee-iaas/pom.xml
       - name: Built and test arm-oraclelinux-wls
-        run: mvn -Ptemplate-validation-tests clean install --file arm-oraclelinux-wls/pom.xml  
-        
+        run: mvn -Ptemplate-validation-tests clean install --file arm-oraclelinux-wls/pom.xml
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Create Resource Group
+        id: create-resource-group
+        run: |
+          export resourceGroup=${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
+          echo ${resourceGroup} ${location}
+          az group create --verbose --name ${resourceGroup} --location ${location}
       - name: Get version information from pom.xml
         run: |
          echo "##[set-env name=version;]$(awk '/<version>[^<]+<\/version>/{gsub(/<version>|<\/version>/,"",$1);print $1;exit;}' arm-oraclelinux-wls/pom.xml)"
@@ -62,4 +76,19 @@ jobs:
         if: success()
         with:
           name: ${{steps.artifact_file.outputs.artifactName}}
-          path: ${{steps.artifact_file.outputs.artifactPath}}
+          path: ${{steps.artifact_path.outputs.artifactPath}}
+
+  cleanup:
+    needs: build
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Delete Resource Group
+        id: delete-resource-group
+        run: |
+          export resourceGroup=${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
+          echo ${resourceGroup} ${location}
+          az group delete --yes --no-wait --verbose --name ${resourceGroup}
