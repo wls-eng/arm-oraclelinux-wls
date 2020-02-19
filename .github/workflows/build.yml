@@ -119,11 +119,7 @@ jobs:
         run: |
           echo "pubilc IP of wls machine:" ${wlsPublicIP}
           echo "check if /u01/app/wls/install/Oracle/Middleware/Oracle_Home/wlserver/modules exists, the step will fail if not."
-          result=$(sshpass -p wlsEng@aug2019 -v \
-            ssh -p 22 -o StrictHostKeyChecking=no \
-            -o ConnectTimeout=2000 \
-            -v -tt weblogic@${wlsPublicIP} \
-            'bash -s' < arm-oraclelinux-wls/test/scripts/verify-wls-path.sh)
+          result=$(sshpass -p wlsEng@aug2019 -v ssh -p 22 -o StrictHostKeyChecking=no -o ConnectTimeout=2000 -v -tt weblogic@${wlsPublicIP} 'bash -s' < arm-oraclelinux-wls/test/scripts/verify-wls-path.sh)
           echo $result
       
       - name: Get version information from pom.xml
