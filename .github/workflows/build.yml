@@ -22,40 +22,49 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
+        id: initialize
         run: |
          echo "##[set-env name=resourceGroup;]${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}"
 
       - name: Checkout azure-javaee-iaas
+        id: checkout-azure-javaee-iaas
         uses: actions/checkout@v2
         with:
           repository: Azure/azure-javaee-iaas
           path: azure-javaee-iaas 
       - name: Checkout Azure Resource Manager Template Toolkit 
+        id: checkout-arm-ttk
         uses: actions/checkout@v2
         with:
           repository: Azure/arm-ttk
           path: arm-ttk 
       - name: Checkout arm-oraclelinux-wls
+        id: checkout-arm-oraclelinux-wls
         uses: actions/checkout@v2
         with:
           path: arm-oraclelinux-wls
       - name: Set up JDK 1.8
+        id: set-up-jdk
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
       - name: Build azure-javaee-iaas
+        id: build-azure-javaee-iaas
         run: mvn -DskipTests clean install --file azure-javaee-iaas/pom.xml
       - name: Built and test arm-oraclelinux-wls
         run: mvn -Ptemplate-validation-tests clean install --file arm-oraclelinux-wls/pom.xml
 
       - uses: azure/login@v1
+        id: azure-login
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Create Resource Group
+        id: create-resource-group
         run: az group create --verbose --name ${resourceGroup} --location eastus
 
       - name: Prepare deployed parameters
+        id: prepare-deployed-parameters
         run: |
          sed -i "s/#otnAccountUsername#/$otnAccountUsername/g; \
           s/#otnAccountPassword#/$otnAccountPassword/g; \
@@ -63,16 +72,19 @@ jobs:
           arm-oraclelinux-wls/test/data/parameters-test.json
 
       - name: Deploy WebLogic Server Single Node offer
+        id: deploy-wls
         uses: azure/CLI@v1
         with:
           azcliversion: 2.0.72
           inlineScript: |
-            az group deployment create --resource-group ${resourceGroup} \
+            az group deployment create \
+              --resource-group ${resourceGroup} \
               --name wls-single-node \
               --parameters @arm-oraclelinux-wls/test/data/parameters-test.json \
               --template-file arm-oraclelinux-wls/target/arm/mainTemplate.json
 
       - name: Verify Network Security Group
+        id: verify-nsg
         uses: azure/CLI@v1
         with:
           azcliversion: 2.0.72
@@ -81,11 +93,13 @@ jobs:
             az network nsg show -g ${resourceGroup} -n ${nsg} --query "name"
 
       - name: Get IP of build machine
+        id: get-ip-address
         run: |
           myIP=$(dig @ns1.google.com TXT o-o.myaddr.l.google.com +short)
           echo "##[set-env name=myIP;]${myIP}"
 
       - name: Add ip address to security rule to access the wls machine
+        id: add-ip-to-security-rule
         uses: azure/CLI@v1
         with:
           azcliversion: 2.0.72
@@ -100,22 +114,27 @@ jobs:
             sourceAddressPrefixes=$(echo ${myIP} ${sourceAddressPrefixes} | \
               sed 's/,/ /g; s/\[//g; s/\]//g; s/"//g')
             echo ${sourceAddressPrefixes}
-            az network nsg rule update --resource-group ${resourceGroup} \
+            az network nsg rule update \
+              --resource-group ${resourceGroup} \
               --nsg-name wls-nsg \
               --name NRMS-Rule-101 \
               --source-address-prefixes $sourceAddressPrefixes
     
       - name: Query public IP of WebLogic Server VM
+        id: query-wls-machine-ip
         uses: azure/CLI@v1
         with:
           azcliversion: 2.0.72
           inlineScript: |
             echo "query public ip"
-            publicIP=$(az vm show --resource-group ${resourceGroup} \
-              --name WebLogicServerVM -d --query publicIps -o tsv)
+            publicIP=$(az vm show \
+              --resource-group ${resourceGroup} \
+              --name WebLogicServerVM -d \
+              --query publicIps -o tsv)
             echo "##[set-env name=wlsPublicIP;]${publicIP}"
       
       - name: Verify WebLogic Server
+        id: verify-wls
         run: |
           echo "pubilc IP of wls machine:" ${wlsPublicIP}
           echo "check if /u01/app/wls/install/Oracle/Middleware/Oracle_Home/wlserver/modules exists, the step will fail if not."
@@ -123,10 +142,12 @@ jobs:
           echo $result
       
       - name: Get version information from pom.xml
+        id: get-version
         run: |
          echo "##[set-env name=version;]$(awk '/<version>[^<]+<\/version>/{gsub(/<version>|<\/version>/,"",$1);print $1;exit;}' \
           arm-oraclelinux-wls/pom.xml)"
       - name: Generate artifact name
+        id: generate-artifact-name
         run: |
          echo "##[set-env name=artifactName;]arm-oraclelinux-wls-$version-arm-assembly" 
       - name: Output artifact name and path
@@ -135,11 +156,13 @@ jobs:
          echo "##[set-output name=artifactName;]arm-oraclelinux-wls-$version-arm-assembly"
          echo "##[set-output name=artifactPath;]arm-oraclelinux-wls/target/$artifactName"
       
-      - name: Unzip the package as upload action will zip again 
+      - name: Prepare artifact
+        id: prepare-artifact
         if: success()
         run: unzip arm-oraclelinux-wls/target/$artifactName.zip -d arm-oraclelinux-wls/target/$artifactName
         
       - name: Archive ${{steps.artifact_file.outputs.artifactName}}.zip
+        id: archive-artifact
         uses: actions/upload-artifact@v1 
         if: success()
         with:
@@ -157,7 +180,10 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Delete Resource Group
         id: delete-resource-group
-        run: |
-          export resourceGroup=${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
-          echo ${resourceGroup} ${location}
-          az group delete --yes --no-wait --verbose --name ${resourceGroup}
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.0.72
+          inlineScript: |
+            resourceGroup=${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}
+            echo ${resourceGroup} ${location}
+            az group delete --yes --no-wait --verbose --name ${resourceGroup}
