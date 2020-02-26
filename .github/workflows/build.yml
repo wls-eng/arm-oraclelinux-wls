@@ -76,7 +76,7 @@ jobs:
         if: success()
         with:
           name: ${{steps.artifact_file.outputs.artifactName}}
-          path: ${{steps.artifact_path.outputs.artifactPath}}
+          path: ${{steps.artifact_file.outputs.artifactPath}}
 
   cleanup:
     needs: build
