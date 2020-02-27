@@ -11,6 +11,7 @@ JDK: OpenJDK 1.8
    * Set up secrets for azure and OTN  
    Create AZURE_CREDENTIALS following the guide [Set up Secrets in GitHub Action workflows](https://github.com/Azure/actions-workflow-samples/blob/master/assets/create-secrets-for-GitHub-workflows.md)  
    Create OTN_USERID and OTN_PASSWORD for Oracle Weblogic Install kit and Oracle JDK download.
+   Create WLS_PASSWORD for WebLogic Server machine.
 
    * Set up global environment variables  
    Most of the steps are run on the virtual machine, azure cli will run on a new container. We can share variables by setting up with keyword [env](https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables) or GitHub API [set-env](https://help.github.com/en/actions/reference/development-tools-for-github-actions#set-an-environment-variable-set-env).
