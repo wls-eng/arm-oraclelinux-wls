@@ -11,6 +11,7 @@ JDK: OpenJDK 1.8
    * Set up secrets for azure and OTN  
    Create AZURE_CREDENTIALS following the guide [Set up Secrets in GitHub Action workflows](https://github.com/Azure/actions-workflow-samples/blob/master/assets/create-secrets-for-GitHub-workflows.md)  
    Create OTN_USERID and OTN_PASSWORD for Oracle Weblogic Install kit and Oracle JDK download.
+   Create WLS_PASSWORD for WebLogic Server machine.
 
    * Set up global environment variables  
    Most of the steps are run on the virtual machine, azure cli will run on a new container. We can share variables by setting up with keyword [env](https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables) or GitHub API [set-env](https://help.github.com/en/actions/reference/development-tools-for-github-actions#set-an-environment-variable-set-env).
@@ -21,11 +22,6 @@ JDK: OpenJDK 1.8
    echo "::set-env name=variableName::variableValue"
    # or
    echo "##[set-env name=variableName;]variableValue"
-   ```
-   Create resourceGroup=${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER} and share within steps.   GITHUB_RUN_ID is GitHub Actions [default environment variables](https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables).
-   ```
-   echo "##[set-env name=resourceGroup;]${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER}"
-   ```
 
 
 1. Checkout source code  
@@ -59,7 +55,7 @@ JDK: OpenJDK 1.8
    * Login azure and create resource group   
    Use [azure/login](https://github.com/marketplace/actions/azure-login) to login azure.  
    Use [Azure CLI Action](https://github.com/marketplace/actions/azure-cli-action) to run azure commands.  
-   Create resource group, name it ${GITHUB_RUN_ID}${GITHUB_RUN_NUMBER} to make sure it's unique.  
+   Create resource group, name it wls-${{ github.run_id }}-${{ github.run_number }} to make sure it's unique.  
    ```
    az group create --verbose --name ${resourceGroup} --location ${location}
    ```
@@ -83,7 +79,7 @@ JDK: OpenJDK 1.8
    Now, we get permission to wls machine, we can connect to the machine and run any command for verification.  
    Execute test/scripts/verify-wls-path.sh, which will pass if the folder exists, otherwise, fail and exit the build process.
    ```
-   sshpass -p wlsEng@aug2019 -v ssh -p 22 -o StrictHostKeyChecking=no -o ConnectTimeout=1000 -v -tt weblogic@${wlsPublicIP} 'bash -s' < arm-oraclelinux-wls/test/scripts/verify-wls-path.sh
+   sshpass -p ${wlsPassword} -v ssh -p 22 -o StrictHostKeyChecking=no -o ConnectTimeout=1000 -v -tt weblogic@${wlsPublicIP} 'bash -s' < arm-oraclelinux-wls/test/scripts/verify-wls-path.sh
    ```
    Note: we meet ssh timeout issue intermittently, to make it more stable, restarting wls machine after updating the security rule and scan the port with Netcat before executing the script.
 
