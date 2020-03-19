@@ -93,4 +93,12 @@ JDK: OpenJDK 1.8
    az group delete --yes --no-wait --verbose --name ${resourceGroup}
    ```
 
+## Tips for CI/CD debugging
+1. Trigger the build flow with command  
+Firstly, add repository_dispatch trigger to the build.yml, we will raise the process with REST event.  
+Before running the command, please set up your github token following [Creating a personal access token for the command line](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)  
+You will start a build process with the command:  
+``
+ curl -XPOST -u "github_account:token" -H "Accept: application/vnd.github.everest-preview+json" -H "Content-Type: application/json" https://api.github.com/repos/galiacheng/arm-oraclelinux-wls/dispatches --data '{"event_type": "production-deploy"}'
+ ``
 
