@@ -15,6 +15,15 @@
                     "regex": "^[a-z0-9A-Z]{3,10}$",
                     "validationMessage": "The prefix must be between 3 and 10 characters long and contain letters, numbers only."
                 }
+            },
+            {
+                "name": "About",
+                "type": "Microsoft.Common.InfoBox",
+                "options": {
+                    "icon": "None",
+                    "text": "Template version ${project.version}"
+                },
+                "visible": "[bool('${template.version.visible}')]"
             }
         ],
         "steps": [
