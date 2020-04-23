@@ -30,7 +30,7 @@ jobs:
         with:
           repository: Azure/azure-javaee-iaas
           path: azure-javaee-iaas
-          ref: 7ace9c4c8a9a9260f1ee3852276285ae2a0df8c2
+          ref: 6807e2ae3e8a8492edf211b9f4f0b7ed3a2a29e7
       - name: Checkout Azure Resource Manager Template Toolkit 
         id: checkout-arm-ttk
         uses: actions/checkout@v2
@@ -51,7 +51,7 @@ jobs:
       - name: Build azure-javaee-iaas
         id: build-azure-javaee-iaas
         run: mvn -DskipTests clean install --file azure-javaee-iaas/pom.xml
-      - name: Built and test arm-oraclelinux-wls
+      - name: Build and test arm-oraclelinux-wls
         run: mvn -Ptemplate-validation-tests clean install --file arm-oraclelinux-wls/pom.xml
 
       - uses: azure/login@v1
@@ -161,7 +161,6 @@ jobs:
           echo "check if /u01/app/wls/install/Oracle/Middleware/Oracle_Home/wlserver/modules exists, the step will fail if not."
           result=$(sshpass -p ${wlsPassword} -v ssh -p 22 -o StrictHostKeyChecking=no -o ConnectTimeout=1000 -v -tt weblogic@${wlsPublicIP} 'bash -s' < arm-oraclelinux-wls/test/scripts/verify-wls-path.sh)
           echo $result
-      
       - name: Get version information from pom.xml
         id: get-version
         run: |

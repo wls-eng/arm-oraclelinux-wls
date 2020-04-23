@@ -31,19 +31,18 @@
     <parent>
         <groupId>com.microsoft.azure.iaas</groupId>
         <artifactId>azure-javaee-iaas-parent</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.6</version>
         <relativePath></relativePath>
     </parent>
     
     <packaging>jar</packaging>
     <name>arm-oraclelinux-wls</name>
-
     <properties>
-      <tracking.pid>pid-b446fe15-5d43-5549-858d-4775741cd0ba</tracking.pid>
+        <template.pid.properties.url>https://raw.githubusercontent.com/galiacheng/arm-oraclelinux-wls/master/src/main/resources/pid.properties</template.pid.properties.url>
+        <template.microsoft.pid.properties.url>https://raw.githubusercontent.com/galiacheng/arm-oraclelinux-wls/master/src/main/resources/microsoft-pid.properties</template.microsoft.pid.properties.url>
     </properties>
-    
+	
     <description>
         
     </description>
-
 </project>
