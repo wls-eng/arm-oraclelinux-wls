@@ -8,6 +8,6 @@ target/
 edburns-parameters.json
 pom.xml.versionsBackup
 _site
-Gemfile*
+Gemfile.lock
 .sass-cache
 arm-oraclelinux-wls

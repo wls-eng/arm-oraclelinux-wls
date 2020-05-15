@@ -8,10 +8,3 @@ versionOr: 12.1.2.3
 oracleLinuxVersion: 7.4
 jdkVersion: Oracle JDK 8u131
 jdkVersionNumber: jdk1.8.0_131
-wildcardDBScriptName: datasourceConfig_CHOSEN_DATABASE.sh
-oracleDBScriptName: datasourceConfig-oracle.sh
-oracleDBScriptDownloadUrl: https://raw.githubusercontent.com/wls-eng/arm-oraclelinux-wls/1.0.6/src/main/scripts/datasourceConfig-oracle.sh
-postgresqlDBScriptName: datasourceConfig-postgresql.sh
-postgresqlDBScriptDownloadUrl: https://raw.githubusercontent.com/wls-eng/arm-oraclelinux-wls/1.0.6/src/main/scripts/datasourceConfig-postgresql.sh
-azuresqlDBScriptName: datasourceConfig-azuresql.sh
-azuresqlDBScriptDownloadUrl: https://raw.githubusercontent.com/wls-eng/arm-oraclelinux-wls/1.0.6/src/main/scripts/datasourceConfig-azuresql.sh
