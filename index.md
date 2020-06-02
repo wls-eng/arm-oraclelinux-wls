@@ -1,0 +1,1 @@
+[Apply Database Template to WebLogic Server with Admin Server Instance](admin/dbTemplate.md)
