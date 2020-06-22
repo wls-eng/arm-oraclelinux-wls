@@ -1,10 +1,12 @@
----
-title:  Features Relating to The Configured Cluster Offer
-metatags: refresh
----
+# {{ site.data.var.wlsFullBrandName }} Cluster
 
-# Features Relating to The Configured Cluster Offer
+{% include sub-template-01.md %}
 
-You can refer to all of the variables defined in `_data/var.yml` using
-liquid template expressions such as `{{ site.data.var.wlsFullBrandName }}`
+Templates available for working with [{{ site.data.var.wlsFullBrandName }} Cluster](https://portal.azure.com/#create/oracle.20191007-arm-oraclelinux-wls-cluster20191007-arm-oraclelinux-wls-cluster):
+
+* [Configure a database connection](dbTemplate.md)
+
+* [Configure Azure Active Directory](aadNestedTemplate.md)
+
+* [Configure Azure Application Gateway](appGatewayNestedTemplate.md)
 

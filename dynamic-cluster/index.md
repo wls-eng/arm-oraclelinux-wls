@@ -1,10 +1,10 @@
----
-title:  Features Relating to The Dynamic Cluster Offer
-metatags: refresh
----
+# {{ site.data.var.wlsFullBrandName }} Dynamic Cluster
 
-# Features Relating to The Dynamic Cluster Offer
+{% include sub-template-01.md %}
 
-You can refer to all of the variables defined in `_data/var.yml` using
-liquid template expressions such as `{{ site.data.var.wlsFullBrandName }}`
+Templates available for working with [{{ site.data.var.wlsFullBrandName }} Dynamic Cluster](https://portal.azure.com/#create/oracle.20191021-arm-oraclelinux-wls-dynamic-cluster20191021-arm-oraclelinux-wls-dynamic-cluster):
+
+* [Configure a database connection](dbTemplate.md)
+
+* [Configure Azure Active Directory](aadNestedTemplate.md)
 
