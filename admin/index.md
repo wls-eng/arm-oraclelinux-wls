@@ -1,10 +1,8 @@
----
-title:  Features Relating to The Admin Only Offer
-metatags: refresh
----
+# Single Node WebLogic Server with Admin Server
 
-# Features Relating to The Admin Only Offer
+{% include sub-template-01.md %}
 
-You can refer to all of the variables defined in `_data/var.yml` using
-liquid template expressions such as `{{ site.data.var.wlsFullBrandName }}`
+* [Configure a database connection](dbTemplate.md)
+
+* [Configure Azure Active Directory](aadNestedTemplate.md)
 
