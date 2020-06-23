@@ -22,7 +22,7 @@ Unzip the ARM template to your local machine, we will run nestedtemplates/appGat
 
 We need to specify information of exsiting WebLogic Server and application gateway, please create parameters.json with the following variables, and change the value to yours.
 
-First, use base64 to encode you application gateway certificate, and output to a file.  
+First, use base64 to encode your application gateway certificate, and output to a file.  
 
 ```
 base64 your-certificate.pfx -w 0 >temp.txt

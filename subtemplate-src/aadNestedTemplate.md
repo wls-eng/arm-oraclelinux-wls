@@ -30,7 +30,7 @@ Please note,
 
 1. For `_artifactsLocation`, please use the default value, `https://raw.githubusercontent.com/wls-eng/arm-oraclelinux-wls-admin/master/src/main/arm/`.
 
-2. For `wlsLDAPSSLCertificate`, please use base64 to encode you application gateway certificate, disable line wrapping and output to a file.  
+2. For `wlsLDAPSSLCertificate`, please use base64 to encode your AAD LDAP client certificate, disable line wrapping and output to a file.  
 
 ```
 base64 your-certificate.cer -w 0 >temp.txt
@@ -95,7 +95,7 @@ Run the following command to apply database service to your WebLogic Server.
 RESOURCE_GROUP=<resource-group-of-your-weblogic-server-instance>
 
 # cd nestedtemplates
-# Create parameters.json with above variables, and place it in the same folder with dbTemplate.json.
+# Create parameters.json with above variables, and place it in the same folder with aadNestedTemplate.json.
 az group deployment create --verbose --resource-group $RESOURCE_GROUP --name aad --parameters @parameters.json --template-file aadNestedTemplate.json
 ```
 
