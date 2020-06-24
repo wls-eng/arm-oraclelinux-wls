@@ -1,6 +1,6 @@
-# Apply Database Template to WebLogic Server with Admin Server Instance
+# Apply Database Template to {{ site.data.var.wlsFullBrandName }}
 
-This article introduces how to apply database template with az cli to an existing WebLogic Server.
+This page documents how to configure an existing deployment of {{ site.data.var.wlsFullBrandName }} with an existing Azure database using Azure CLI.
 
 ## Prerequisites
 
@@ -10,11 +10,14 @@ This article introduces how to apply database template with az cli to an existin
 
 ### WebLogic Server Instance
 
-The database tempate will be applied to an existing WebLogic Server instance.  If you don't have one, please create a new instance from Azure portal, link to WebLogic offer is available from [Oracle WebLogic Server with Admin Server](https://portal.azure.com/#create/oracle.20191009-arm-oraclelinux-wls-admin20191009-arm-oraclelinux-wls-admin).  
+The database tempate will be applied to an existing {{ site.data.var.wlsFullBrandName }} instance.  If you don't have one, please create a new instance from the Azure portal, by following the link to the offer [in the index](index.md).
 
 ### Database Instance
 
-To apply database to Weblogic Server, you must have an existing database instance to use. Three kinds of database are available now, Oracle, SQL Server, and Postgresql. If you do not have an instance, please create from Azure portal.
+To apply configure a database with {{ site.data.var.wlsFullBrandName }},
+you must have an existing database instance to use.  This template
+supports three popular Azure databases: [Oracle](https://ms.portal.azure.com/#blade/Microsoft_Azure_Marketplace/MarketplaceOffersBlade/selectedMenuItemId/home/searchQuery/oracle%20database), [Azure SQL Server](https://docs.microsoft.com/en-us/azure/azure-sql/) and [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/azure-sql/database/single-database-create-quickstart?WT.mc_id=gallery&tabs=azure-portal).  If you do not have an instance, please
+create one from the Azure portal.
 
 ### Download Template
 

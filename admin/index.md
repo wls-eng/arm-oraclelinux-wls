@@ -1,3 +1,7 @@
+---
+title: Single Node {{ site.data.var.wlsFullBrandName }} with Admin Server
+---
+
 # Single Node {{ site.data.var.wlsFullBrandName }} with Admin Server
 
 {% include sub-template-01.md %}
