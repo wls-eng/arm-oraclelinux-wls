@@ -8,3 +8,5 @@ Templates available for working with [{{ site.data.var.wlsFullBrandName }} Dynam
 
 * [Configure Azure Active Directory](aadNestedTemplate.md)
 
+* [Delete nodes](deletenode.md)
+

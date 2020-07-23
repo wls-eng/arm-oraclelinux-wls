@@ -10,3 +10,5 @@ Templates available for working with [{{ site.data.var.wlsFullBrandName }} Clust
 
 * [Configure Azure Application Gateway](appGatewayNestedTemplate.md)
 
+* [Delete nodes](deletenode.md)
+
