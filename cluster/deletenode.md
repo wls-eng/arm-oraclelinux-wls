@@ -16,7 +16,7 @@ The template will be applied to an existing {{ site.data.var.wlsFullBrandName }}
 
 ## Prepare the Parameters JSON file
 
-You must construct a parameters JSON file containing the parameters to the database ARM template.  See [Create Resource Manager parameter file](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/parameter-files) for background information about parameter files.   You must specify the information of the existing {{ site.data.var.wlsFullBrandName }} and nodes that to be deleted. This section shows how to obtain the values for the following required properties.
+You must construct a parameters JSON file containing the parameters to the delete-node ARM template.  See [Create Resource Manager parameter file](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/parameter-files) for background information about parameter files.   You must specify the information of the existing {{ site.data.var.wlsFullBrandName }} and nodes that to be deleted. This section shows how to obtain the values for the following required properties.
 
 | Parameter Name | Explanation |
 |----------------|-------------|
