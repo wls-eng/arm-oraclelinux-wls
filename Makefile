@@ -8,4 +8,6 @@ all:
 	cp subtemplate-src/appGatewayNestedTemplate.md cluster
 	cp subtemplate-src/cluster-deletenode.md cluster/deletenode.md
 	cp subtemplate-src/dynamic-cluster-deletenode.md dynamic-cluster/deletenode.md
+	cp subtemplate-src/cluster-addnode.md cluster/addnode.md
+	cp subtemplate-src/dynamic-cluster-addnode.md dynamic-cluster/addnode.md
 

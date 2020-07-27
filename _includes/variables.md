@@ -25,5 +25,11 @@ Account for variability in the repo paths.
   {% comment %}
   something like https://raw.githubusercontent.com/edburns/arm-oraclelinux-wls-cluster/2020-06-24-01-Q2/deletenode/src/main/
   {% endcomment %}
+
+  {% capture armTemplateAddNodeBasePath %}{{ site.data.var.artifactsLocationBase }}{{ pageDir }}/{{ site.data.var.artifactsLocationTag }}/addnode/src/main/{% endcapture %}
+
+  {% comment %}
+  something like https://raw.githubusercontent.com/edburns/arm-oraclelinux-wls-cluster/2020-06-24-01-Q2/addnode/src/main/
+  {% endcomment %}
   
 {% endif %}

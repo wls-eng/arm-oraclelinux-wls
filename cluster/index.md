@@ -4,6 +4,8 @@
 
 Templates available for working with [{{ site.data.var.wlsFullBrandName }} Cluster](https://portal.azure.com/#create/oracle.20191007-arm-oraclelinux-wls-cluster20191007-arm-oraclelinux-wls-cluster):
 
+* [Add nodes](addnode.md)
+
 * [Configure a database connection](dbTemplate.md)
 
 * [Configure Azure Active Directory](aadNestedTemplate.md)
