@@ -14,10 +14,6 @@ This page documents how to configure an existing deployment of {{ site.data.var.
 
 The template will be applied to an existing {{ site.data.var.wlsFullBrandName }} instance.  If you don't have one, please create a new instance from the Azure portal, by following the link to the offer [in the index](index.md).
 
-### Certificate for SSL Termination
-
-Refer to [Certificate for SSL Termination](appGatewayNestedTemplate.html#certificate-for-ssl-termination).
-
 ### Azure Active Directory LDAP Instance
 
 Refer to [Azure Active Directory(AAD) LDAP Instance](aadNestedTemplate.html#azure-active-directory-ldap-instance).
@@ -68,30 +64,6 @@ You must construct a parameters JSON file containing the parameters to the add-n
   <td colspan="2">The URL of WebLogic Administration Server, usually made up with Virtual Machine name and port, for example: <code>adminVM:7001</code>.</td>
  </tr>
  <tr>
-  <td rowspan="5"><code>appGatewaySettings</code></td>
-  <td colspan="2">Optional. <a href="https://docs.microsoft.com/en-us/azure/architecture/building-blocks/extending-templates/objects-as-parameters">JSON object type</a>. You can specify this parameters to enable application gateway in new nodes. If <code>enable</code> is true, must specify all properties of the <code>appGatewaySettings</code></td>
- </tr>
- <tr>
-
-  <td><code>enable</code></td>
-  <td>If <code>enable</code> is true, must specify all properties of the <code>appGatewaySettings</code>.</td>
- </tr>
- <tr>
-
-  <td><code>publicIPName</code></td>
-  <td>The Azure resource name of public IP of the application gateway.</td>
- </tr>
- <tr>
-
-  <td><code>certificateBase64String</code></td>
-  <td>The base64 string of the application gateway ssl server certificate.</td>
- </tr>
- <tr>
-
-  <td><code>certificatePassword</code></td>
-  <td>Password of the server certificate.</td>
- </tr>
- <tr>
   <td><code>numberOfExistingNodes</code></td>
   <td colspan="2">The number of existing nodes, including Administration Server node, used to generate new managed server virtual machine name,.</td>
  </tr>
@@ -125,36 +97,6 @@ This value must be the following.
 {{ armTemplateAddNodeBasePath }}
 ```
 
-### `appGatewaySettings`
-
-This is an object value. The value is to specify the information of existing application gateway. 
-
-* `enable`
-
-  This is bool value, it's set to `false` by default.
-
-  `true`: enable application gateway.
-
-  `false`: disable application gateway.
-
-* `publicIPName`
-
-  This is a string value, the value is the Azure resource name of public IP of the applciation gateway. 
-
-  At deployment time, if this value was changed from its default value, the value used at deployment time must be used.  Otherwise, this parameter should be <code>gwip</code>.
-
-* SSL Certificate Data and Password
-
-  Use base64 to encode your existing PFX format certificate.
-
-  ```bash
-  base64 your-certificate.pfx -w 0 >temp.txt
-  ```
-
-  Use the content as this file as the value of the `certificateBase64String` parameter.
-
-  It is assumed that you have the password for the certificate.  Use this as the value of the `certificatePassword` parameter.
-
 ### Storage account
 
 Each Storage Account handles up to 20,000 IOPS, and 500TB of data. If you use a storage account for Standard Virtual Machines, you can store until 40 virtual disks.
@@ -163,7 +105,7 @@ We have two disks for one Virtual Machine, it's suggested no more than 20 Virtua
 
 #### Example Parameters JSON
 
-Here is a fully filled out parameters file, with Azure Active Directory and application gateway enabled. We will leave values of `adminUsername`, `authenticationType`, `dnsLabelPrefix`, `managedServerPrefix`, `skuUrnVersion`, `usePreviewImage` and `vmSizeSelect` as default value. 
+Here is a fully filled out parameters file, with Azure Active Directory enabled. We will leave values of `adminUsername`, `authenticationType`, `dnsLabelPrefix`, `managedServerPrefix`, `skuUrnVersion`, `usePreviewImage` and `vmSizeSelect` as default value. 
 
 ```json
 {
@@ -186,14 +128,6 @@ Here is a fully filled out parameters file, with Azure Active Directory and appl
         },
         "adminURL":{
             "value": "adminVM:7001"
-        },
-        "appGatewaySettings":{
-            "value": {
-                "enable": true,
-                "publicIPName": "gwip",
-                "certificateBase64String": "MIIKQQIB...kAgIIAA==",
-                "certificatePassword": "Secret123!"
-            }
         },
         "location": {
             "value": "eastus"
@@ -248,129 +182,104 @@ This is an example output of successful deployment.  Look for `"provisioningStat
 
 ```bash
 {
-  "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Resources/deployments/mainTemplate",
+  "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Resources/deployments/mainTemplate",
   "location": null,
   "name": "mainTemplate",
   "properties": {
-    "correlationId": "68911268-e6fb-4507-a4be-ce44c3ed4568",
+    "correlationId": "54517529-a1c4-422f-a539-23b9a5129e80",
     "debugSetting": null,
     "dependencies": [
       {
         "dependsOn": [
           {
-            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Compute/virtualMachines/mspVM4",
-            "resourceGroup": "oraclevm-cluster-07232",
-            "resourceName": "mspVM4",
-            "resourceType": "Microsoft.Compute/virtualMachines"
-          }
-        ],
-        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Network/applicationGateways/myAppGateway",
-        "resourceGroup": "oraclevm-cluster-07232",
-        "resourceName": "myAppGateway",
-        "resourceType": "Microsoft.Network/applicationGateways"
-      },
-      {
-        "dependsOn": [
-          {
-            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Compute/virtualMachines/mspVM4/extensions/newuserscript",
-            "resourceGroup": "oraclevm-cluster-07232",
-            "resourceName": "mspVM4/newuserscript",
+            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Compute/virtualMachines/mspVM7/extensions/newuserscript",
+            "resourceGroup": "oraclevm-dcluster-0727",
+            "resourceName": "mspVM7/newuserscript",
             "resourceType": "Microsoft.Compute/virtualMachines/extensions"
           }
         ],
-        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Resources/deployments/pid-2452bb0e-13d9-5ad3-816b-d645ba5198c4",
-        "resourceGroup": "oraclevm-cluster-07232",
-        "resourceName": "pid-2452bb0e-13d9-5ad3-816b-d645ba5198c4",
+        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Resources/deployments/pid-c7671c10-ae59-5ec5-bff3-c60db22d7ea4",
+        "resourceGroup": "oraclevm-dcluster-0727",
+        "resourceName": "pid-c7671c10-ae59-5ec5-bff3-c60db22d7ea4",
         "resourceType": "Microsoft.Resources/deployments"
       },
       {
         "dependsOn": [
           {
-            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Network/publicIPAddresses/mspVM4_PublicIP",
-            "resourceGroup": "oraclevm-cluster-07232",
-            "resourceName": "mspVM4_PublicIP",
+            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Network/publicIPAddresses/mspVM7_PublicIP",
+            "resourceGroup": "oraclevm-dcluster-0727",
+            "resourceName": "mspVM7_PublicIP",
             "resourceType": "Microsoft.Network/publicIPAddresses"
           }
         ],
-        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Network/networkInterfaces/mspVM4_NIC",
-        "resourceGroup": "oraclevm-cluster-07232",
-        "resourceName": "mspVM4_NIC",
+        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Network/networkInterfaces/mspVM7_NIC",
+        "resourceGroup": "oraclevm-dcluster-0727",
+        "resourceName": "mspVM7_NIC",
         "resourceType": "Microsoft.Network/networkInterfaces"
       },
       {
         "dependsOn": [
           {
-            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Network/networkInterfaces/mspVM4_NIC",
-            "resourceGroup": "oraclevm-cluster-07232",
-            "resourceName": "mspVM4_NIC",
+            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Network/networkInterfaces/mspVM7_NIC",
+            "resourceGroup": "oraclevm-dcluster-0727",
+            "resourceName": "mspVM7_NIC",
             "resourceType": "Microsoft.Network/networkInterfaces"
           },
           {
             "apiVersion": "2019-06-01",
-            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Storage/storageAccounts/496dfdolvm",
-            "resourceGroup": "oraclevm-cluster-07232",
-            "resourceName": "496dfdolvm",
+            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Storage/storageAccounts/09b943olvm",
+            "resourceGroup": "oraclevm-dcluster-0727",
+            "resourceName": "09b943olvm",
             "resourceType": "Microsoft.Storage/storageAccounts"
           }
         ],
-        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Compute/virtualMachines/mspVM4",
-        "resourceGroup": "oraclevm-cluster-07232",
-        "resourceName": "mspVM4",
+        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Compute/virtualMachines/mspVM7",
+        "resourceGroup": "oraclevm-dcluster-0727",
+        "resourceName": "mspVM7",
         "resourceType": "Microsoft.Compute/virtualMachines"
       },
       {
         "dependsOn": [
           {
-            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Compute/virtualMachines/mspVM4",
-            "resourceGroup": "oraclevm-cluster-07232",
-            "resourceName": "mspVM4",
+            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Compute/virtualMachines/mspVM7",
+            "resourceGroup": "oraclevm-dcluster-0727",
+            "resourceName": "mspVM7",
             "resourceType": "Microsoft.Compute/virtualMachines"
           },
           {
             "actionName": "listKeys",
             "apiVersion": "2019-04-01",
-            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Storage/storageAccounts/496dfdolvm",
-            "resourceGroup": "oraclevm-cluster-07232",
-            "resourceName": "496dfdolvm",
+            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Storage/storageAccounts/09b943olvm",
+            "resourceGroup": "oraclevm-dcluster-0727",
+            "resourceName": "09b943olvm",
             "resourceType": "Microsoft.Storage/storageAccounts"
-          },
-          {
-            "apiVersion": "2019-11-01",
-            "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Network/publicIPAddresses/gwip",
-            "resourceGroup": "oraclevm-cluster-07232",
-            "resourceName": "gwip",
-            "resourceType": "Microsoft.Network/publicIPAddresses"
           }
         ],
-        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Compute/virtualMachines/mspVM4/extensions/newuserscript",
-        "resourceGroup": "oraclevm-cluster-07232",
-        "resourceName": "mspVM4/newuserscript",
+        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Compute/virtualMachines/mspVM7/extensions/newuserscript",
+        "resourceGroup": "oraclevm-dcluster-0727",
+        "resourceName": "mspVM7/newuserscript",
         "resourceType": "Microsoft.Compute/virtualMachines/extensions"
       }
     ],
-    "duration": "PT8M1.9860595S",
+    "duration": "PT9M6.8098765S",
     "mode": "Incremental",
     "onErrorDeployment": null,
     "outputResources": [
       {
-        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Compute/virtualMachines/mspVM4",
-        "resourceGroup": "oraclevm-cluster-07232"
+        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Compute/virtualMachines/mspVM7",
+        "resourceGroup": "oraclevm-dcluster-0727"
       },
       {
-        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Compute/virtualMachines/mspVM4/extensions/newuserscript",
-        "resourceGroup": "oraclevm-cluster-07232"
+        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Compute/virtualMachines/mspVM7/extensions/newuserscript",
+        "resourceGroup": "oraclevm-dcluster-0727"
       },
       {
-        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Network/applicationGateways/myAppGateway",
-        "resourceGroup": "oraclevm-cluster-07232"
+        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Network/networkInterfaces/mspVM7_NIC",
+        "resourceGroup": "oraclevm-dcluster-0727"
       },
       {
-        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Network/networkInterfaces/mspVM4_NIC",
-        "resourceGroup": "oraclevm-cluster-07232"
-      },
-      {
-        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-cluster-07232/providers/Microsoft.Network/publicIPAddresses/mspVM4_PublicIP",
-        "resourceGroup": "oraclevm-cluster-07232"
+        "id": "/subscriptions/05887623-95c5-4e50-a71c-6e1c738794e2/resourceGroups/oraclevm-dcluster-0727/providers/Microsoft.Network/publicIPAddresses/mspVM7_PublicIP",
+        "resourceGroup": "oraclevm-dcluster-0727"
       }
     ],
     "outputs": {
@@ -390,9 +299,9 @@ This is an example output of successful deployment.  Look for `"provisioningStat
       "aadsSettings": {
         "type": "Object",
         "value": {
-          "certificateBase64String": "LS0tLS1C...EUtLS0tLQ0K",
+          "certificateBase64String": "LS0tLS1C...S0tLQ0K",
           "enable": true,
-          "publicIP": "13.68.244.90",
+          "publicIP": "40.76.11.111",
           "serverHost": "ladps.wls-security.com"
         }
       },
@@ -407,15 +316,6 @@ This is an example output of successful deployment.  Look for `"provisioningStat
         "type": "String",
         "value": "weblogic"
       },
-      "appGatewaySettings": {
-        "type": "Object",
-        "value": {
-          "certificateBase64String": "MIIKQQI...EkAgIIAA==",
-          "certificatePassword": "wlsEng@aug2019",
-          "enable": true,
-          "publicIPName": "gwip"
-        }
-      },
       "authenticationType": {
         "type": "String",
         "value": "password"
@@ -426,7 +326,7 @@ This is an example output of successful deployment.  Look for `"provisioningStat
       },
       "guidValue": {
         "type": "String",
-        "value": "a921f454-a2e6-46fb-a884-49fdd9594713"
+        "value": "67657ba3-6248-46e5-bedc-53e16ac82571"
       },
       "location": {
         "type": "String",
@@ -438,7 +338,7 @@ This is an example output of successful deployment.  Look for `"provisioningStat
       },
       "numberOfExistingNodes": {
         "type": "Int",
-        "value": 4
+        "value": 7
       },
       "numberOfNewNodes": {
         "type": "Int",
@@ -450,7 +350,7 @@ This is an example output of successful deployment.  Look for `"provisioningStat
       },
       "storageAccountName": {
         "type": "String",
-        "value": "496dfdolvm"
+        "value": "09b943olvm"
       },
       "usePreviewImage": {
         "type": "Bool",
@@ -506,16 +406,6 @@ This is an example output of successful deployment.  Look for `"provisioningStat
               "eastus"
             ],
             "properties": null,
-            "resourceType": "applicationGateways"
-          },
-          {
-            "aliases": null,
-            "apiVersions": null,
-            "capabilities": null,
-            "locations": [
-              "eastus"
-            ],
-            "properties": null,
             "resourceType": "publicIPAddresses"
           },
           {
@@ -561,14 +451,14 @@ This is an example output of successful deployment.  Look for `"provisioningStat
     ],
     "provisioningState": "Succeeded",
     "template": null,
-    "templateHash": "8366095419510750190",
+    "templateHash": "15879952829017360289",
     "templateLink": {
       "contentVersion": "1.0.0.0",
       "uri": "{{ armTemplateAddNodeBasePath }}arm/mainTemplate.json"
     },
-    "timestamp": "2020-07-27T12:50:50.698990+00:00"
+    "timestamp": "2020-07-27T12:37:03.733682+00:00"
   },
-  "resourceGroup": "oraclevm-cluster-07232",
+  "resourceGroup": "oraclevm-dcluster-0727",
   "type": "Microsoft.Resources/deployments"
 }
 ```
@@ -578,12 +468,16 @@ This is an example output of successful deployment.  Look for `"provisioningStat
 ### Verify if new nodes are added to the WebLogic Server instance.
 
 * Go to the {{ site.data.var.wlsFullBrandName }} Administration Console.
-* Go to  **Environment** -> **Servers**.
-
-  You should see new server names with suffix from `numberOfExistingNodes` to `numberOfExistingNodes + numberOfNewNodes - 1` that have been added listed in **Name** column.
 * Go to **Environment -> Machines**.
+  You should see logical machines with suffix from `numberOfExistingNodes` to `numberOfExistingNodes + numberOfNewNodes - 1` are added.
+  Make note of the total number of machines.
 
-  You should see logical machines with suffix from `numberOfExistingNodes` to `numberOfExistingNodes + numberOfNewNodes - 1` that host the new servers are added.
+* Scale up to check if the machines work
+    * Go to **Environment** -> **Cluster** -> `cluster1` -> **Control** -> **Scaling**. 
+        Input value to **Desired Number of Running Servers** with the total number of machines, saved in last step.
+    * Save and activate.
+    * Go to **Environment** -> **Servers**.
+        Expected result: the running managed server number is the same as machine total number. And there are servers running on the new managed nodes.
 
 ### Verify if Azure resources are added
 
@@ -592,15 +486,11 @@ This is an example output of successful deployment.  Look for `"provisioningStat
 
   You should see corresponding Vitual Machines, Disks, Network Interfaces, Public IPs have been added.
 
-### Verify Application Gateway
-
-Refer to [Verify Application Gateway](appGatewayNestedTemplate.html#verify-application-gateway).
-
 ### Verify AAD Integration
 
 Verify AAD integration by delpoying a simple Java EE applciation with basic authentication.
 
-* Go to Admin Server Console and deploy [testing application](../resources/basicauth.war).
+* Go to Administration Server Console and deploy [testing application](../resources/basicauth.war).
   * Select **Deployments**.
   * Select **Install**.
   * Select file `basicauth.war`.
@@ -615,8 +505,8 @@ Verify AAD integration by delpoying a simple Java EE applciation with basic auth
   * Select **Servicing all requests**
 
 * Access the sample application
-  * Go to `appGatewayURL/basicauth`, the browser will prompt up to ask for credentials, input one of AAD users from group **AAD DC Administrators**, note that use name should be **sAMAccountName**, for example: login with `wlstest` for user `wlstest@javaeehotmailcom.onmicrosoft.com`.
+  * Go to Administration Server Console
+  * Go to **Environment -> Machines**. Click one of the new machines, make sure there are servers running on that machine. Click **Node Manager** and make note of the machine host in **Listen Address**, here named it as `machineName`. Click **Servers** and make note of **Listen Port**, here named it as `port`.
+  * Go to [Azure Portal](https://ms.portal.azure.com/), and get DNS name from Virtual Machine has the same name of `machineName`, named it `machineDNS`  
+  * Go to `http://${machineDNS}:${port}/basicauth`, the browser will prompt up to ask for credentials, input one of AAD users from group **AAD DC Administrators**, note that use name should be **sAMAccountName**, for example `wlstest` for user `wlstest@javaeehotmailcom.onmicrosoft.com`.
   * Expected result, you can access the sample application without error.
-
-
-

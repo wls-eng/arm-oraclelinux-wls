@@ -98,7 +98,7 @@ The following command runs the script in silent mode with option `-s`, this mode
 If you want to keep Azure resources, refer to [advanced usage](#advanced-usage) for further information.
 
 ```bash
-$ curl -fsSL {{ armTemplateDeleteNodeBasePath }}scripts/deletenode-cli.sh | /bin/bash -s -- -s -g -g yourResourceGroup -u {{ armTemplateDeleteNodeBasePath }}arm/mainTemplate.json -p parameters.json
+$ curl -fsSL {{ armTemplateDeleteNodeBasePath }}scripts/deletenode-cli.sh | /bin/bash -s -- -s -g yourResourceGroup -u {{ armTemplateDeleteNodeBasePath }}arm/mainTemplate.json -p parameters.json
 ```
 
 The script will validate the template with your parameters file; deploy the template to delete managed servers from WebLogic Server cluster; run Azure CLI commands to delete corresponding Azure resources.

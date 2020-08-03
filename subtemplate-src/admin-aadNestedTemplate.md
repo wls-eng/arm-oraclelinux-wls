@@ -30,9 +30,7 @@ You must construct a parameters JSON file containing the parameters to the AAD A
 | `aadsServerHost` | The hostname of the Active Directory Domain Services server. |
 | `adminPassword` | The password for the VM on which the {{ site.data.var.wlsFullBrandName }} admin server is running. | 
 | `adminVMName`| At deployment time, if this value was changed from its default value, the value used at deployment time must be used.  Otherwise, this parameter should be omitted. |
-| `dynamicClusterSize` | Size of the dynamic cluster. |
 | `location` | Must be the same region into which the server was initially deployed. |
-| `managedServerPrefix` | Must be the same managed server prefix with that in initial deployed. |
 | `wlsDomainName` | The name of the {{ site.data.var.wlsFullBrandName }} domain. |
 | `wlsLDAPGroupBaseDN` | The base distinguished name (DN) of the tree in the LDAP directory that contains groups. |
 | `wlsLDAPPrincipalPassword` | The credential (usually a password) used to connect to the LDAP server. |
@@ -62,13 +60,9 @@ base64 your-certificate.cer -w 0 >temp.txt
 
 Use the content as this file as the value of the `wlsLDAPSSLCertificate` parameter.
 
-### `dynamicClusterSize`
-
-Size of the dynamic cluster, it should equal to numbers of Virtual Machines that have names starting with `msp`.
-
 #### Example Parameters JSON
 
-Here is a fully filled out parameters file.   Note that we did not include values for parameters that have a default value. Pay attention to the value of `dynamicClusterSize`.
+Here is a fully filled out parameters file.   Note that we did not include values for parameters that have a default value.
 
 ```json
 {
@@ -91,7 +85,7 @@ Here is a fully filled out parameters file.   Note that we did not include value
             "value": "eastus"
         },
         "wlsDomainName": {
-          "value": "wlsd"
+          "value": "adminDomain"
         },
         "wlsLDAPGroupBaseDN": {
             "value": "OU=AADDC Users,DC=fabrikam,DC=com"

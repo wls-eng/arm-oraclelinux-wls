@@ -510,6 +510,3 @@ Verify AAD integration by delpoying a simple Java EE applciation with basic auth
   * Go to [Azure Portal](https://ms.portal.azure.com/), and get DNS name from Virtual Machine has the same name of `machineName`, named it `machineDNS`  
   * Go to `http://${machineDNS}:${port}/basicauth`, the browser will prompt up to ask for credentials, input one of AAD users from group **AAD DC Administrators**, note that use name should be **sAMAccountName**, for example `wlstest` for user `wlstest@javaeehotmailcom.onmicrosoft.com`.
   * Expected result, you can access the sample application without error.
-
-
-
