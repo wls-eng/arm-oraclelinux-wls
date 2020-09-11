@@ -18,6 +18,9 @@ The template will be applied to an existing {{ site.data.var.wlsFullBrandName }}
 
 Refer to [Azure Active Directory(AAD) LDAP Instance](aadNestedTemplate.html#azure-active-directory-ldap-instance).
 
+### Certificate for SSL Termination
+Refer to [Configure Azure Application Gateway#Certificate for SSL Termination](appGatewayNestedTemplate.html#certificate-for-ssl-termination).
+
 ## Prepare the Parameters JSON file
 
 You must construct a parameters JSON file containing the parameters to the add-node ARM template.  See [Create Resource Manager parameter file](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/parameter-files) for background information about parameter files.   You must specify the information of the existing {{ site.data.var.wlsFullBrandName }} and nodes that to be added. This section shows how to obtain the values for the following required properties.
@@ -62,6 +65,30 @@ You must construct a parameters JSON file containing the parameters to the add-n
  <tr>
   <td><code>adminURL</code></td>
   <td colspan="2">The URL of WebLogic Administration Server, usually made up with Virtual Machine name and port, for example: <code>adminVM:7001</code>.</td>
+ </tr>
+ <tr>
+  <td rowspan="5"><code>appGatewaySettings</code></td>
+  <td colspan="2">Optional. <a href="https://docs.microsoft.com/en-us/azure/architecture/building-blocks/extending-templates/objects-as-parameters">JSON object type</a>. You can specify this parameters for application gateway configuration. If <code>enable</code> is true, must specify other properties. See the page <a href="https://docs.microsoft.com/en-us/azure/developer/java/migration/migrate-weblogic-with-app-gateway">Migrate a WebLogic Server cluster to Azure with Azure Application Gateway as a load balancer</a> for further information.</td>
+ </tr>
+ <tr>
+
+  <td><code>enable</code></td>
+  <td>If <code>enable</code> is true, must specify all properties of the <code>appGatewaySettings</code>.</td>
+ </tr>
+ <tr>
+
+  <td><code>publicIPName</code></td>
+  <td>Azure resource name of application gateway public IP, default value is <code>gwip</code></td>
+ </tr>
+ <tr>
+
+  <td><code>certificateBase64String</code></td>
+  <td>Base64 string of server certificate for application gateway.</td>
+ </tr>
+ <tr>
+
+  <td><code>certificatePassword</code></td>
+  <td>Password of server certificate.</td>
  </tr>
  <tr>
   <td><code>numberOfExistingNodes</code></td>
@@ -129,6 +156,14 @@ Here is a fully filled out parameters file, with Azure Active Directory enabled.
         "adminURL":{
             "value": "adminVM:7001"
         },
+        "appGatewaySettings": {
+            "value": {
+               "enable": true,
+               "publicIPName": "gwip",
+               "certificateBase64String": "MIIKQQI...gIIAA==",
+               "certificatePassword": "wlsEng@aug2019"
+            }
+         },
         "location": {
             "value": "eastus"
         },
