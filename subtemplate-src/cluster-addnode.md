@@ -68,7 +68,7 @@ You must construct a parameters JSON file containing the parameters to the add-n
  </tr>
  <tr>
   <td rowspan="5"><code>appGatewaySettings</code></td>
-  <td colspan="2">Optional. <a href="https://docs.microsoft.com/en-us/azure/architecture/building-blocks/extending-templates/objects-as-parameters">JSON object type</a>. You can specify this parameters for application gateway configuration. If <code>enable</code> is true, must specify other properties. See the page <a href="https://docs.microsoft.com/en-us/azure/developer/java/migration/migrate-weblogic-with-app-gateway">Migrate a WebLogic Server cluster to Azure with Azure Application Gateway as a load balancer</a> for further information.</td>
+  <td colspan="2">Optional. <a href="https://docs.microsoft.com/en-us/azure/architecture/building-blocks/extending-templates/objects-as-parameters">JSON object type</a>. You can specify these parameters for application gateway configuration. If <code>enable</code> is true, you must specify other properties. If <code>enable</code> is false, the other properties are ignored.  See the page <a href="https://docs.microsoft.com/en-us/azure/developer/java/migration/migrate-weblogic-with-app-gateway">Migrate a WebLogic Server cluster to Azure with Azure Application Gateway as a load balancer</a> for further information.</td>
  </tr>
  <tr>
 
