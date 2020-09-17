@@ -32,7 +32,7 @@ jobs:
         with:
           repository: Azure/arm-ttk
           path: arm-ttk
-          ref: e2fbdcb93a4b2004c9ea953956b85248e0ef8c1c
+          ref: 1b58e01c5f201a819d795dbc3576c2fd7cbed821
       - name: Checkout arm-oraclelinux-wls
         id: checkout-arm-oraclelinux-wls
         uses: actions/checkout@v2

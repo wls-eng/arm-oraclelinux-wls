@@ -299,7 +299,7 @@
          "name": "${end}",
          "type": "Microsoft.Resources/deployments",
          "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
          ],
          "properties": {
             "mode": "Incremental",
@@ -316,7 +316,7 @@
          "type": "Microsoft.Resources/deployments",
          "condition": "[if(contains(variables('name_linuxImageOfferSKU'), 'owls-122130-8u131-ol74'), bool('true'), bool('false'))]",
          "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
          ],
          "properties": {
             "mode": "Incremental",
@@ -334,7 +334,7 @@
          "type": "Microsoft.Resources/deployments",
          "condition": "[if(contains(variables('name_linuxImageOfferSKU'), 'from.owls-122130-8u131-ol73'), bool('true'), bool('false'))]",
          "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
          ],
          "properties": {
             "mode": "Incremental",
@@ -352,7 +352,7 @@
          "type": "Microsoft.Resources/deployments",
          "condition": "[if(contains(variables('name_linuxImageOfferSKU'), 'from.owls-122140-8u251-ol76'), bool('true'), bool('false'))]",
          "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
          ],
          "properties": {
             "mode": "Incremental",
@@ -370,7 +370,7 @@
          "type": "Microsoft.Resources/deployments",
          "condition": "[if(contains(variables('name_linuxImageOfferSKU'), 'owls-141100-8u251-ol76'), bool('true'), bool('false'))]",
          "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
          ],
          "properties": {
             "mode": "Incremental",
@@ -388,7 +388,7 @@
          "type": "Microsoft.Resources/deployments",
          "condition": "[if(contains(variables('name_linuxImageOfferSKU'), 'owls-141100-11_07-ol76'), bool('true'), bool('false'))]",
          "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
          ],
          "properties": {
             "mode": "Incremental",
