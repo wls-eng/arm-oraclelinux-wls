@@ -228,7 +228,10 @@
                      }
                   }
                }
-            ]
+            ],
+            "dnsSettings": {
+               "internalDnsNameLabel": "[parameters('vmName')]"
+            }
          }
       },
       {
