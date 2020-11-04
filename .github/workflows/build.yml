@@ -52,12 +52,12 @@ jobs:
       - name: Get version information from pom.xml
         id: get-version
         run: |
-         echo "##[set-env name=version;]$(awk '/<version>[^<]+<\/version>/{gsub(/<version>|<\/version>/,"",$1);print $1;exit;}' \
-          arm-oraclelinux-wls/pom.xml)"
+          version=$(awk '/<version>[^<]+<\/version>/{gsub(/<version>|<\/version>/,"",$1);print $1;exit;}' arm-oraclelinux-wls/pom.xml)
+          echo "version=${version}" >> $GITHUB_ENV
       - name: Generate artifact name
         id: generate-artifact-name
         run: |
-         echo "##[set-env name=artifactName;]arm-oraclelinux-wls-$version-arm-assembly" 
+          echo "artifactName=arm-oraclelinux-wls-$version-arm-assembly" >> $GITHUB_ENV
       - name: Output artifact name and path
         id: artifact_file
         run: |
@@ -93,7 +93,9 @@ jobs:
           path: arm-oraclelinux-wls
       - name: Get version information from arm-oraclelinux-wls/pom.xml
         id: version
-        run: echo "##[set-env name=version;]$(awk '/<version>[^<]+<\/version>/{gsub(/<version>|<\/version>/,"",$1);print $1;exit;}' arm-oraclelinux-wls/pom.xml)"
+        run: |
+          version=$(awk '/<version>[^<]+<\/version>/{gsub(/<version>|<\/version>/,"",$1);print $1;exit;}' arm-oraclelinux-wls/pom.xml)
+          echo "version=${version}" >> $GITHUB_ENV
       - name: Output artifact name for Download action
         id: artifact_file
         run: echo "##[set-output name=artifactName;]arm-oraclelinux-wls-$version-arm-assembly"
@@ -111,16 +113,17 @@ jobs:
         run: |
           imageUrn="${{ matrix.images }}"
           sku=${imageUrn%%;*}
-          echo "##[set-env name=sku;]${sku}"
+          echo "sku=${sku}" >> $GITHUB_ENV
+          echo ${resourceGroupPrefix}
+          resourceGroup=$(echo "${resourceGroupPrefix}-${sku}" | sed "s/_//g")
+          echo "resourceGroup=${resourceGroup}" >> $GITHUB_ENV
       - name: Create Resource Group
         id: create-resource-group
         uses: azure/CLI@v1
         with:
           azcliversion: ${{ env.azCliVersion }}
           inlineScript: |
-            resourceGroup=${{ env.resourceGroupPrefix }}-${sku}
             echo "create resource group" $resourceGroup
-            echo "##[set-env name=resourceGroup;]${resourceGroup}"
             az group create --verbose --name $resourceGroup --location ${location}
 
       - name: Prepare deployed parameters and test script
@@ -159,7 +162,7 @@ jobs:
         id: get-ip-address
         run: |
           myIP=$(dig @ns1.google.com TXT o-o.myaddr.l.google.com +short)
-          echo "##[set-env name=myIP;]${myIP}"
+          echo "myIP=${myIP}" >> $GITHUB_ENV
 
       - name: Add ip address to security rule to access the wls machine
         id: add-ip-to-security-rule
@@ -212,8 +215,10 @@ jobs:
               --resource-group ${resourceGroup} \
               --name WebLogicServerVM -d \
               --query publicIps -o tsv)
-            echo "VM Public IP ${publicIp}"
-            echo "##[set-env name=wlsPublicIP;]${publicIP}"
+            echo "##[set-output name=publicIP;]${publicIP}"
+      - name: Create environment variable for WebLogic Server VM IP
+        id: env-wls-machine-ip
+        run: echo "wlsPublicIP=${{steps.query-wls-machine-ip.outputs.publicIP}}" >> $GITHUB_ENV
       
       - name: Verify WebLogic Server
         id: verify-wls
