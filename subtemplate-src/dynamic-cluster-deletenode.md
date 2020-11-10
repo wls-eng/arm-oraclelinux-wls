@@ -22,6 +22,7 @@ You must construct a parameters JSON file containing the parameters that to the 
 |----------------|-------------|
 | `_artifactsLocation`| See below for details. |
 | `adminVMName`| At deployment time, if this value was changed from its default value, the value used at deployment time must be used.  Otherwise, this parameter should be omitted. |
+| `deletingCacheServerNames`| (Optional) Names of cache servers to be deleted, comma delimited. Please ignore this parameter if you are not deleting cache servers. |
 | `deletingManagedServerMachineNames`| The resource names of Azure Virtual Machine hosting managed nodes that you want to delete. |
 | `wlsPassword` | Must be the same value provided at deployment time. |
 | `wlsUserName` | Must be the same value provided at deployment time. |
@@ -34,11 +35,25 @@ This value must be the following.
 {{ armTemplateDeleteNodeBasePath }}
 ```
 
-### `deletingManagedServerMachineNames`
+### Server names
 
-This value must be an array of strings, for example: `["mspVM1", "mspVM2"]`.
+This value must be an array of strings, with pattern `^${managedServerPrefix}Storage[0-9]+$`, for example: `["mspStorage1", "mspStorage2"]`.
 
 You can get the server names from WebLogic Server Administration Console, following the steps:
+
+* Go to WebLogic Server Administration Console, http://admin-host:7001/console.
+
+* Go to **Environment** -> **Servers**.
+
+  Server names are listed in the first column.  
+  
+  If you want to remove coresponding virtual machine, please go to [Machine names](#machine-names) to obtain machine names.
+
+### Machine names
+
+This value must be an array of strings, for example: `["mspVM1", "mspVM2", "mspStorageVM2"]`.
+
+You can get the machine names from WebLogic Server Administration Console, following the steps:
 
 * Go to WebLogic Server Administration Console, http://admin-host:7001/console.
 
@@ -59,17 +74,25 @@ Here is a fully filled out parameters file.   Note that we do not include `admin
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "_artifactsLocation":{
+        "_artifactsLocation": {
             "value": "{{ armTemplateDeleteNodeBasePath }}"
-          },
-          "deletingManagedServerMachineNames": {
-            "value": ["mspVM1"]
-          },
+        },
+        "deletingCacheServerNames": {
+            "value": [
+                "mspStorage2"
+            ]
+        },
+        "deletingManagedServerMachineNames": {
+            "value": [
+                "mspVM4",
+                "mspStorageVM2"
+            ]
+        },
         "wlsPassword": {
-          "value": "welcome1"
+            "value": "welcome1"
         },
         "wlsUserName": {
-          "value": "weblogic"
+            "value": "weblogic"
         }
     }
 }
@@ -98,7 +121,7 @@ The following command runs the script in silent mode with option `-s`, this mode
 If you want to keep Azure resources, refer to [advanced usage](#advanced-usage) for further information.
 
 ```bash
-$ curl -fsSL {{ armTemplateDeleteNodeBasePath }}scripts/deletenode-cli.sh | /bin/bash -s -- -s -g yourResourceGroup -u {{ armTemplateDeleteNodeBasePath }}arm/mainTemplate.json -p parameters.json
+$ curl -fsSL {{ armTemplateDeleteNodeBasePath }}scripts/deletenode-cli.sh | /bin/bash -s -- -s -g `yourResourceGroup` -u {{ armTemplateDeleteNodeBasePath }}arm/mainTemplate.json -p parameters.json
 ```
 
 The script will validate the template with your parameters file; deploy the template to delete managed servers from WebLogic Server cluster; run Azure CLI commands to delete corresponding Azure resources.

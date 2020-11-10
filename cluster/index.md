@@ -4,7 +4,9 @@
 
 Templates available for working with [{{ site.data.var.wlsFullBrandName }} Cluster](https://portal.azure.com/#create/oracle.20191007-arm-oraclelinux-wls-cluster20191007-arm-oraclelinux-wls-cluster):
 
-* [Add nodes](addnode.md)
+* [Add Managed application servers](addnode.md)
+
+* [Add Managed Coherence cache servers](addnode-coherence.md)
 
 * [Configure a database connection](dbTemplate.md)
 
@@ -12,5 +14,6 @@ Templates available for working with [{{ site.data.var.wlsFullBrandName }} Clust
 
 * [Configure Azure Application Gateway](appGatewayNestedTemplate.md)
 
-* [Delete nodes](deletenode.md)
+* [Configure Coherence cluster](coherenceTemplate.md)
 
+* [Delete nodes](deletenode.md)

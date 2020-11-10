@@ -10,4 +10,8 @@ all:
 	cp subtemplate-src/dynamic-cluster-deletenode.md dynamic-cluster/deletenode.md
 	cp subtemplate-src/cluster-addnode.md cluster/addnode.md
 	cp subtemplate-src/dynamic-cluster-addnode.md dynamic-cluster/addnode.md
+	cp subtemplate-src/addnode-coherence.md cluster/addnode-coherence.md
+	cp subtemplate-src/addnode-coherence.md dynamic-cluster/addnode-coherence.md
+	cp subtemplate-src/coherenceTemplate.md cluster/coherenceTemplate.md
+	cp subtemplate-src/coherenceTemplate.md dynamic-cluster/coherenceTemplate.md
 

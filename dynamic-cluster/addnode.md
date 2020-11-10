@@ -2,7 +2,7 @@
 
 # Add nodes to {{ site.data.var.wlsFullBrandName }}
 
-This page documents how to configure an existing deployment of {{ site.data.var.wlsFullBrandName }} to add nodes using Azure CLI.
+This page documents how to configure an existing deployment of {{ site.data.var.wlsFullBrandName }} to add add new managed application nodes using Azure CLI.
 
 ## Prerequisites
 
@@ -64,8 +64,42 @@ You must construct a parameters JSON file containing the parameters to the add-n
   <td colspan="2">The URL of WebLogic Administration Server, usually made up with Virtual Machine name and port, for example: <code>adminVM:7001</code>.</td>
  </tr>
  <tr>
+  <td rowspan="7"><code>elkSettings</code></td>
+  <td colspan="2">Optional. <a href="https://docs.microsoft.com/en-us/azure/architecture/building-blocks/extending-templates/objects-as-parameters">JSON object type</a>. You can specify this parameters for Elasticsearch and Kibana(ELK) connection. If <code>enable</code> is true, must specify other properties. See the page <a href="https://aka.ms/arm-oraclelinux-wls-elk">WebLogic with Elastic on Azure</a> for further information.</td>
+ </tr>
+ <tr>
+
+  <td><code>enable</code></td>
+  <td>If <code>enable</code> is true, must specify all properties of the <code>elkSettings</code>.</td>
+ </tr>
+ <tr>
+
+  <td><code>elasticsearchEndpoint</code></td>
+  <td>Endpoint of the Elasticsearch instance.</td>
+ </tr>
+ <tr>
+
+  <td><code>elasticsearchPassword</code></td>
+  <td>Password for Elasticsearch account.</td>
+ </tr>
+ <tr>
+
+  <td><code>elasticsearchUserName</code></td>
+  <td>User name for Elasticsearch account.</td>
+ </tr>
+ <tr>
+
+  <td><code>logIndex</code></td>
+  <td>Must be the same value output at ELK deployment time. </td>
+ </tr>
+ <tr>
+
+  <td><code>logsToIntegrate</code></td>
+  <td>Array with string value. Specify the expeted logs to integrate, you must input at least one log.</td>
+ </tr>
+ <tr>
   <td><code>numberOfExistingNodes</code></td>
-  <td colspan="2">The number of existing nodes, including Administration Server node, used to generate new managed server virtual machine name,.</td>
+  <td colspan="2">The number of existing managed application nodes, used to generate new virtual machine name,.</td>
  </tr>
  <tr>
   <td><code>numberOfNewNodes</code></td>
@@ -97,11 +131,58 @@ This value must be the following.
 {{ armTemplateAddNodeBasePath }}
 ```
 
+### Existing managed application servers
+To differentiate functionality of managed servers, we use **managed application server** to represent managed servers that host Java EE application, and use **managed cache server** to represent managed servers that used for cache.
+
+You can get the existing managed application nodes with the following command:
+
+```shell
+$ resourceGroup=<your-resource-group>
+$ managedServerPrefix=<managed-server-prefix>
+$ numberOfExistingNodes=$(az resource list -g ${resourceGroup} --resource-type Microsoft.Compute/virtualMachines --query [*].name | grep "${managedServerPrefix}VM[0-9]" | sed -e 's/[^0-9]/ /g' -e 's/^ *//g' -e 's/ *$//g' | tr -s ' ' | sed 's/ /\n/g' | sort  -nr | head -n1)
+$ echo ${numberOfExistingNodes}
+```
+
+### Log index
+
+If you configured ELK in your cluster to export WebLogic Server logs to ELK, please input the value of Kibana log index, this template will set up ELK connection and export logs to specified index.
+
+You can get the value from Azure portal with the following steps:
+
+* Go to Azure portal.
+* Open you resource group and click **Deployments**.
+* Open the ELK deployment, and click **Output**.
+* Copy the value of `logIndex`.
+
+Alternatively, use Azure CLI command to list log index inside the resource group deployments:
+
+```shell
+$ az deployment group list -g 'yourResourceGroup' --query [*].properties.outputs.logIndex.value
+[
+  "azure-weblogic-cluster-f984df74-ab4d-4c17-a532-7f248659fb28"
+]
+```
+
 ### Storage account
 
 Each Storage Account handles up to 20,000 IOPS, and 500TB of data. If you use a storage account for Standard Virtual Machines, you can store until 40 virtual disks.
 
-We have two disks for one Virtual Machine, it's suggested no more than 20 Virtual Machines share the same storage account. Sum of `numberOfExistingNodes` and `numberOfNewNodes` should be less than or equal to 20.
+We have two disks for one Virtual Machine, it's suggested no more than 20 Virtual Machines share the same storage account. Number of virtual machines that hosting managed servers should be less than or equal to 20.
+
+You can get the name of storage account from Azure portal with steps:
+
+  * Go to Azure portal
+  * Go to the your resource group
+  * Find storage account resource and copy its name
+
+Alternatively, use Azure CLI command to list storage account inside a resource group:
+
+```shell
+$ az resource list -g 'yourResourceGroup' --resource-type Microsoft.Storage/storageAccounts --query [*].name
+[
+  "219846olvm"
+]
+```
 
 #### Example Parameters JSON
 
@@ -128,6 +209,16 @@ Here is a fully filled out parameters file, with Azure Active Directory enabled.
         },
         "adminURL":{
             "value": "adminVM:7001"
+        },
+        "elkSettings": {
+            "value": {
+                "enable": true,
+                "elasticsearchEndpoint":"https://example.eastus2.azure.elastic-cloud.com:9243",
+                "elasticsearchPassword": "Secret123!",
+                "elasticsearchUserName":"elastic",
+                "logIndex": "azure-weblogic-dynamic-cluster-11122020",
+                "logsToIntegrate": ["HTTPAccessLog", "ServerLog", "DomainLog", "DataSourceLog", "StandardErrorAndOutput", "NodeManagerLog"]
+            }
         },
         "location": {
             "value": "eastus"
@@ -469,14 +560,16 @@ This is an example output of successful deployment.  Look for `"provisioningStat
 
 * Go to the {{ site.data.var.wlsFullBrandName }} Administration Console.
 * Go to **Environment -> Machines**.
-  You should see logical machines with suffix from `numberOfExistingNodes` to `numberOfExistingNodes + numberOfNewNodes - 1` are added.
+  You should see logical machines with suffix from `numberOfExistingNodes` to `numberOfExistingNodes + numberOfNewNodes` are added.
   Make note of the total number of machines.
 
 * Scale up to check if the machines work
     * Go to **Environment** -> **Cluster** -> `cluster1` -> **Control** -> **Scaling**. 
+
         Input value to **Desired Number of Running Servers** with the total number of machines, saved in last step.
     * Save and activate.
     * Go to **Environment** -> **Servers**.
+    
         Expected result: the running managed server number is the same as machine total number. And there are servers running on the new managed nodes.
 
 ### Verify if Azure resources are added

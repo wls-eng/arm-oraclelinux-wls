@@ -74,20 +74,26 @@ Here is a fully filled out parameters file.   Note that here we do not include `
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "_artifactsLocation":{
+        "_artifactsLocation": {
             "value": "{{ armTemplateDeleteNodeBasePath }}"
-          },
+        },
         "deletingManagedServerNames": {
-            "value": ["msp1"]
-          },
-          "deletingManagedServerMachineNames": {
-            "value": ["mspVM1"]
-          },
+            "value": [
+                "msp4",
+                "mspStorage2"
+            ]
+        },
+        "deletingManagedServerMachineNames": {
+            "value": [
+                "mspVM4",
+                "mspStorageVM2"
+            ]
+        },
         "wlsPassword": {
-          "value": "welcome1"
+            "value": "welcome1"
         },
         "wlsUserName": {
-          "value": "weblogic"
+            "value": "weblogic"
         }
     }
 }
@@ -116,7 +122,7 @@ The following command runs the script in silent mode with option `-s`, this mode
 If you want to keep Azure resources, refer to [advanced usage](#advanced-usage) for further information.
 
 ```bash
-$ curl -fsSL {{ armTemplateDeleteNodeBasePath }}scripts/deletenode-cli.sh | /bin/bash -s -- -s -g yourResourceGroup -u {{ armTemplateDeleteNodeBasePath }}arm/mainTemplate.json -p parameters.json
+$ curl -fsSL {{ armTemplateDeleteNodeBasePath }}scripts/deletenode-cli.sh | /bin/bash -s -- -s -g `yourResourceGroup` -u {{ armTemplateDeleteNodeBasePath }}arm/mainTemplate.json -p parameters.json
 ```
 
 The script will validate the template with your parameters file; deploy the template to delete managed servers from WebLogic Server cluster; run Azure CLI commands to delete corresponding Azure resources.
