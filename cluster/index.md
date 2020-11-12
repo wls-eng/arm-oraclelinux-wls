@@ -16,4 +16,6 @@ Templates available for working with [{{ site.data.var.wlsFullBrandName }} Clust
 
 * [Configure Coherence cluster](coherenceTemplate.md)
 
+* [Configure Elasticsearch and Kibana](elkNestedTemplate.md)
+
 * [Delete nodes](deletenode.md)

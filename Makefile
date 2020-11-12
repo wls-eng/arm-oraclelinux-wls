@@ -14,4 +14,7 @@ all:
 	cp subtemplate-src/addnode-coherence.md dynamic-cluster/addnode-coherence.md
 	cp subtemplate-src/coherenceTemplate.md cluster/coherenceTemplate.md
 	cp subtemplate-src/coherenceTemplate.md dynamic-cluster/coherenceTemplate.md
+	cp subtemplate-src/admin-elkNestedTemplate.md admin/elkNestedTemplate.md
+	cp subtemplate-src/cluster-elkNestedTemplate.md cluster/elkNestedTemplate.md
+	cp subtemplate-src/dynamic-cluster-elkNestedTemplate.md dynamic-cluster/elkNestedTemplate.md
 

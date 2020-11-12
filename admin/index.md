@@ -8,3 +8,5 @@ Templates available for working with [{{ site.data.var.wlsFullBrandName }} with 
 
 * [Configure Azure Active Directory](aadNestedTemplate.md)
 
+* [Configure Elasticsearch and Kibana](elkNestedTemplate.md)
+
