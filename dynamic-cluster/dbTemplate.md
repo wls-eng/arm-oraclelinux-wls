@@ -21,6 +21,19 @@ you must have an existing database instance to use.  This template
 supports three popular Azure databases: [Oracle](https://ms.portal.azure.com/#blade/Microsoft_Azure_Marketplace/MarketplaceOffersBlade/selectedMenuItemId/home/searchQuery/oracle%20database), [Azure SQL Server](https://docs.microsoft.com/en-us/azure/azure-sql/) and [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/azure-sql/database/single-database-create-quickstart?WT.mc_id=gallery&tabs=azure-portal).  If you do not have an instance, please
 create one from the Azure portal.
 
+### Apply multiple databases 
+
+You can deploy different databases using the database ARM template, by changing the ARM parameters file and invoking the template again with Azure CLI.
+
+To apply multiple databases, you have to remove the previous virtual machine extension. Last ARM parameters file is cached, it will block you from configuring the new database.
+
+Use the following command to remove virtual machine extension:
+
+```bash
+# remove existing vm extension
+az vm extension delete -g ${yourResourceGroup} --vm-name ${adminVMName} --name newuserscript
+```
+
 ## Prepare the Parameters JSON file
 
 You must construct a parameters JSON file containing the parameters to the database ARM template.  See [Create Resource Manager parameter file](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/parameter-files) for background information about parameter files.   We must specify the information of the existing {{ site.data.var.wlsFullBrandName }} and database instance. This section shows how to obtain the values for the following required properties.
