@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - develop
-      - 20201202-hotfix
   schedule:
       - cron:  '0 7 * * *'
   repository_dispatch:
@@ -126,7 +125,6 @@ jobs:
           inlineScript: |
             echo "create resource group" $resourceGroup
             az group create --verbose --name $resourceGroup --location ${location}
-            echo "resourceGroup=${resourceGroup}" >> $GITHUB_ENV
 
       - name: Prepare deployed parameters and test script
         id: prepare-deployed-parameters-and-test-script
@@ -229,7 +227,10 @@ jobs:
               --resource-group ${resourceGroup} \
               --name WebLogicServerVM -d \
               --query publicIps -o tsv)
-            echo "VM Public IP ${publicIp}"
+            echo "##[set-output name=publicIP;]${publicIP}"
+      - name: Create environment variable for WebLogic Server VM IP
+        id: env-wls-machine-ip
+        run: echo "wlsPublicIP=${{steps.query-wls-machine-ip.outputs.publicIP}}" >> $GITHUB_ENV
       
       - name: Verify WebLogic Server
         id: verify-wls
