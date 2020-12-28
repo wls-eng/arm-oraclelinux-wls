@@ -239,6 +239,8 @@ jobs:
           echo "test port..."
           timeout 6m sh -c 'until nc -zv $0 $1; do echo "nc rc: $?"; sleep 5; done' ${wlsPublicIP} 22
           echo "check if /u01/app/wls/install/oracle/middleware/oracle_home/wlserver/modules exists, the step will fail if not."
+          echo install sshpass
+          sudo apt-get install -y sshpass
           result=$(sshpass -p ${wlsPassword} -v ssh -p 22 -o StrictHostKeyChecking=no -o ConnectTimeout=1000 -v -tt weblogic@${wlsPublicIP} 'bash -s' < arm-oraclelinux-wls/test/scripts/verify-wls-path.sh)
           echo $result
 
