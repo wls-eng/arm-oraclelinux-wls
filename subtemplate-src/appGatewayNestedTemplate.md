@@ -28,6 +28,7 @@ You must construct a parameters JSON file containing the parameters to the datab
 |----------------|-------------|
 | `_artifactsLocation`| See below for details. |
 | `adminVMName`| At deployment time, if this value was changed from its default value, the value used at deployment time must be used.  Otherwise, this parameter should be omitted. |
+| `customDomainName`| Specify a custome domain name if want to override application gateway hostname. You are required to input the value if you use a pre-assigned SSL for application gateway. |
 | `appGatewaySSLCertificateData`| See below for details. |
 | `appGatewaySSLCertificatePassword`| See below for details. |
 | `dnsNameforApplicationGateway`| (optional) A prefix value for the dns name of the Application Gateway. |
@@ -35,6 +36,7 @@ You must construct a parameters JSON file containing the parameters to the datab
 | `location` | Must be the same region into which the server was initially deployed. |
 | `managedServerPrefix` | At deployment time, if this value was changed from its default value, the value used at deployment time must be used.  Otherwise, this parameter should be omitted. |
 | `numberOfInstances` | The number of instances in the cluster.  Must be the same as the value used at deployment time. |
+| `overrideHostName` | If `true` the template will override the application gateway hostname with value of `customDomainName`. The vaule should be `true` if you use a pre-assigned SSL for application gateway. |
 | `wlsDomainName` | At deployment time, if this value was changed from its default value, the value used at deployment time must be used.  Otherwise, this parameter should be omitted. |
 | `wlsPassword` | Must be the same value provided at deployment time. |
 | `wlsUserName` | Must be the same value provided at deployment time. |
