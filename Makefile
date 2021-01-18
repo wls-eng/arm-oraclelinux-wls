@@ -17,4 +17,6 @@ all:
 	cp subtemplate-src/admin-elkNestedTemplate.md admin/elkNestedTemplate.md
 	cp subtemplate-src/cluster-elkNestedTemplate.md cluster/elkNestedTemplate.md
 	cp subtemplate-src/dynamic-cluster-elkNestedTemplate.md dynamic-cluster/elkNestedTemplate.md
+	cp subtemplate-src/customDNSTemplate.md cluster/customDNSTemplate.md
+
 
