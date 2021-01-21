@@ -28,7 +28,6 @@ You must construct a parameters JSON file containing the parameters to the AAD A
 | `aadsPortNumber` | (optional) The LDAP port number, defaults to 636. | 
 | `aadsPublicIP` | The IP address of the LDAP server |
 | `aadsServerHost` | The hostname of the Active Directory Domain Services server. |
-| `adminPassword` | The password for the VM on which the {{ site.data.var.wlsFullBrandName }} admin server is running. | 
 | `adminVMName`| At deployment time, if this value was changed from its default value, the value used at deployment time must be used.  Otherwise, this parameter should be omitted. |
 | `dynamicClusterSize` | Size of the dynamic cluster. |
 | `location` | Must be the same region into which the server was initially deployed. |
@@ -83,9 +82,6 @@ Here is a fully filled out parameters file.   Note that we did not include value
         },
         "aadsServerHost": {
            "value": "ladps.fabrikam.com"
-        },
-        "adminPassword": {
-           "value": "jyfRat@nht2019"
         },
         "location": {
             "value": "eastus"
@@ -206,9 +202,6 @@ This is an example output of successful deployment.  Look for `"provisioningStat
       "aadsServerHost": {
         "type": "String",
         "value": "ladps.wls-security.com"
-      },
-      "adminPassword": {
-        "type": "SecureString"
       },
       "adminVMName": {
         "type": "String",
