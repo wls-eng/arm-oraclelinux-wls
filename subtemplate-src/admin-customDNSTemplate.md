@@ -65,7 +65,6 @@ We provide an automation shell script for DNS configuration. You must specify th
 | `--resource-group` | Required. Name of resource group that has WebLogic cluster deployed. |
 | `--location ` | Required. Must be the same region into which the server was initially deployed. |
 | `--zone-name ` | Required. Azure DNS Zone name. |
-| `--gateway-label` | Optional. Label for applciation gateway. Used to generate subdomain of application gateway. The parameter is only required if you want to create DNS alias for application gateway.|
 | `--identity-id` | Optional. ID of Azure user-assigned managed identity. The parameter is only required if you are creating DNS alias on an existing DNS Zone.|
 | `--zone-resource-group` | Optional. Name of resource group that has Azure DNS Zone deployed. The parameter is only required if you are creating DNS alias on an existing DNS Zone. |
 | `--help` | Help. |
@@ -82,14 +81,14 @@ This value must be the following.
 
 We provide an automation script to configure a custom DNS alias. The script lets you do the following:
 
-  * If you have an Azure DNS Zone, it will create a DNS alias for the admin console and application gateway on the existing DNS Zone.
-  * If you don't have an Azure DNS Zone, it will create the DNS Zone in the same resource group as the WebLogic cluster, then create the DNS alias for the admin console and application gateway.
+  * If you have an Azure DNS Zone, it will create a DNS alias for the admin console on the existing DNS Zone.
+  * If you don't have an Azure DNS Zone, it will create the DNS Zone in the same resource group as the WebLogic cluster, then create the DNS alias for the admin console.
 
 ### Configure DNS Alias on an Existing Azure DNS Zone
 
 To configure a DNS alias on an existing Azure DNS Zone, in addition to the required parameters, you must also specify an Azure user-assigned managed identity ID and the resource group name in which your DNS Zone is deployed.
 
-This is an example to create a DNS alias `admin.contoso.com` for the admin console and `applciations.contoso.com` for the application gateway on an existing Azure DNS Zone.
+This is an example to create a DNS alias `admin.contoso.com` for the admin console in an existing Azure DNS Zone.
 
 ```bash
 $ curl -fsSL {{ site.data.var.artifactsLocationBase }}{{ pageDir }}/{{ site.data.var.artifactsLocationTag }}/cli-scripts/custom-dns-alias-cli.sh \
@@ -100,7 +99,6 @@ $ curl -fsSL {{ site.data.var.artifactsLocationBase }}{{ pageDir }}/{{ site.data
   --artifact-location {{ armTemplateBasePath }} \
   --location eastus \
   --zone-name contoso.com \
-  --gateway-label applications \
   --identity-id `yourIndentityID` \
   --zone-resource-group `yourDNSZoneResourceGroup`
 ```
@@ -114,10 +112,7 @@ Custom DNS alias:
     Resource group: haiche-dns-doc
     WebLogic Server Administration Console URL: http://admin.contoso.com:7001/console
     WebLogic Server Administration Console secured URL: https://admin.contoso.com:7002/console
-  
 
-    Application Gateway URL: http://applications.contoso.com
-    Application Gateway secured URL: https://applications.contoso.com
 ```
 
 
@@ -125,7 +120,7 @@ Custom DNS alias:
 
 To configure a DNS alias on a new Azure DNS Zone, you must specify the required parameters.
 
-This is an example of creating an Azure DNS Zone, then creating a DNS alias `admin.contoso.com` for the admin console and `applications.contoso.com` for application gateway. 
+This is an example of creating an Azure DNS Zone, then creating a DNS alias `admin.contoso.com` for the admin console. 
 
 ```bash
 $ curl -fsSL {{ site.data.var.artifactsLocationBase }}{{ pageDir }}/{{ site.data.var.artifactsLocationTag }}/cli-scripts/custom-dns-alias-cli.sh \
@@ -135,8 +130,7 @@ $ curl -fsSL {{ site.data.var.artifactsLocationBase }}{{ pageDir }}/{{ site.data
   --admin-console-label admin \
   --artifact-location {{ armTemplateBasePath }} \
   --location eastus \
-  --zone-name contoso.com \
-  --gateway-label applications
+  --zone-name contoso.com
 ```
 
 An example output:
@@ -160,10 +154,6 @@ Custom DNS alias:
     Resource group: haiche-dns-doc
     WebLogic Server Administration Console URL: http://admin.contoso.com:7001/console
     WebLogic Server Administration Console secured URL: https://admin.contoso.com:7002/console
-  
-
-    Application Gateway URL: http://applications.contoso.com
-    Application Gateway secured URL: https://applications.contoso.com
 ```
 
 **Note:** The DNS aliases are not accessible now, you must perform Azure DNS delegation after the deployment. Follow [Delegation of DNS zones with Azure DNS](https://aka.ms/dns-domain-delegation) to complete the Azure DNS delegation.

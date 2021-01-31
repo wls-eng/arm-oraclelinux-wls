@@ -2,7 +2,7 @@
 
 # Configure DNS alias to {{ site.data.var.wlsFullBrandName }}
 
-This page documents how to configure an existing deployment of {{ site.data.var.wlsFullBrandName }} with custom DNS alias.
+This page documents how to configure an existing deployment of {{ site.data.var.wlsFullBrandName }} with a custom DNS alias.
 
 ## Prerequisites
 
@@ -16,21 +16,19 @@ The DNS Configuraton ARM template will be applied to an existing {{ site.data.va
 
 ### Registered Domain Name
 
-You need to buy a domain name to create custom DNS alias, which can be accessed public.
+You need to buy a domain name to create a custom DNS alias.
 
 ### Azure DNS Zone
 
-Optional.
-
-If you create the DNS alias on an existing [Azure DNS Zone](https://docs.microsoft.com/en-us/azure/dns/dns-overview), make sure you have perfomed the [Azure DNS Delegation](https://docs.microsoft.com/en-us/azure/dns/dns-domain-delegation) with the following command.
+If you create the DNS alias on an existing [Azure DNS Zone](https://docs.microsoft.com/en-us/azure/dns/dns-overview), make sure you have perfomed the [Azure DNS Delegation](https://docs.microsoft.com/en-us/azure/dns/dns-domain-delegation).  Once you have completed the delegation, you can verify it with `nslookup`.  For example, assuming your domain name is **contoso.com**, this output shows a correct delegation.
 
 ```bash
-$ nslookup -type=SOA wlseng-azuretest.com
+$ nslookup -type=SOA contoso.com
 Server:         172.29.80.1
 Address:        172.29.80.1#53
 
 Non-authoritative answer:
-wlseng-azuretest.com
+contoso.com
         origin = ns1-01.azure-dns.com
         mail addr = azuredns-hostmaster.microsoft.com
         serial = 1
@@ -42,15 +40,13 @@ Name:   ns1-01.azure-dns.com
 Address: 40.90.4.1
 Name:   ns1-01.azure-dns.com
 Address: 2603:1061::1
-
-Authoritative answers can be found from:
 ```
 
-We will strongly recommand you to create an Azure DNS Zone for domain management and reuse it for other perpose. Follow the [guide](https://docs.microsoft.com/en-us/azure/dns/dns-getstarted-portal) to create Azure DNS Zone.
+We strongly recommand you create an Azure DNS Zone for domain management and reuse it for other perpose. Follow the [guide](https://docs.microsoft.com/en-us/azure/dns/dns-getstarted-portal) to create an Azure DNS Zone.
 
 ### Azure Managed Indentify
 
-If you are going to configure DNS alias based on an existing DNS Zone, you are required to input an ID of Azure user-assigned managed identity. 
+If you are going to configure DNS alias based on an existing DNS Zone, you are required to input the ID of a user-assigned managed identity. 
 
 Follow this [guide](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-manage-ua-identity-portal) to create a user-assigned managed identity.
 
@@ -69,12 +65,11 @@ We provide an automation shell script for DNS configuration. You must specify th
 | `--resource-group` | Required. Name of resource group that has WebLogic cluster deployed. |
 | `--location ` | Required. Must be the same region into which the server was initially deployed. |
 | `--zone-name ` | Required. Azure DNS Zone name. |
-| `--gateway-label` | Optional. Label for applciation gateway. Used to generate subdomain of application gateway. The parameter is only required if you want to create DNS alias for application gateway.|
 | `--identity-id` | Optional. ID of Azure user-assigned managed identity. The parameter is only required if you are creating DNS alias on an existing DNS Zone.|
 | `--zone-resource-group` | Optional. Name of resource group that has Azure DNS Zone deployed. The parameter is only required if you are creating DNS alias on an existing DNS Zone. |
 | `--help` | Help. |
 
-### `_artifactsLocation`
+### Artifacts location
 
 This value must be the following.
 
@@ -84,29 +79,28 @@ This value must be the following.
 
 ## Invoke the Automation Script
 
-We provide automation script to configure custom DNS alias. With the script, you are allowed to 
+We provide an automation script to configure a custom DNS alias. The script lets you do the following:
 
-  * If you have an Azure DNS Zone, create DNS alias  for admin console and application gateway on the existing DNS Zone.
-  * If you don't have an Azure DNS Zone, create the DNS Zone in the same resource group of WebLogic cluster, and create DNS alias for admin console and application gateway.
+  * If you have an Azure DNS Zone, it will create a DNS alias for the admin console on the existing DNS Zone.
+  * If you don't have an Azure DNS Zone, it will create the DNS Zone in the same resource group as the WebLogic cluster, then create the DNS alias for the admin console.
 
 ### Configure DNS Alias on an Existing Azure DNS Zone
 
-To configure DNS alias on an existing Azure DNS Zone, besides the required parameters, you must specify an Azure user-assigned managed identity ID, resource group name of which has your DNS Zone deployed.
+To configure a DNS alias on an existing Azure DNS Zone, in addition to the required parameters, you must also specify an Azure user-assigned managed identity ID and the resource group name in which your DNS Zone is deployed.
 
-This is an example to create DNS alias `admin.consoto.com` for admin console and `applciations.consoto.com` for application gateway on an existing Azure DNS Zone.
+This is an example to create a DNS alias `admin.contoso.com` for the admin console in an existing Azure DNS Zone.
 
 ```bash
-$ curl -fsSL https://raw.githubusercontent.com/wls-eng/arm-oraclelinux-wls-cluster/2020-12-02-01-Q4/cli-scripts/custom-dns-alias-cli.sh \
+$ curl -fsSL {{ site.data.var.artifactsLocationBase }}{{ pageDir }}/{{ site.data.var.artifactsLocationTag }}/cli-scripts/custom-dns-alias-cli.sh \
   | /bin/bash -s -- \
   --resource-group `yourResourceGroup` \
   --admin-vm-name adminVM \
   --admin-console-label admin \
   --artifact-location {{ armTemplateBasePath }} \
   --location eastus \
-  --zone-name consoto.com \
-  --gateway-label applications \
+  --zone-name contoso.com \
   --identity-id `yourIndentityID` \
-  --zone-resource-group 'yourDNSZoneResourceGroup'
+  --zone-resource-group `yourDNSZoneResourceGroup`
 ```
 
 An example output:
@@ -116,31 +110,27 @@ Done!
 
 Custom DNS alias:
     Resource group: haiche-dns-doc
-    WebLogic Server Administration Console URL: http://admin.consoto.com:7001/console
-    WebLogic Server Administration Console secured URL: https://admin.consoto.com:7002/console
-  
+    WebLogic Server Administration Console URL: http://admin.contoso.com:7001/console
+    WebLogic Server Administration Console secured URL: https://admin.contoso.com:7002/console
 
-    Application Gateway URL: http://applications.consoto.com
-    Application Gateway secured URL: https://applications.consoto.com
 ```
 
 
 ### Configure DNS Alias on a New Azure DNS Zone
 
-To configure DNS alias on a new Azure DNS Zone, you must specify the required parameters.
+To configure a DNS alias on a new Azure DNS Zone, you must specify the required parameters.
 
-This is an example to create an Azure DNS Zone, and create DNS alias `admin.consoto.com` for admin console and `applciations.consoto.com` for application gateway. 
+This is an example of creating an Azure DNS Zone, then creating a DNS alias `admin.contoso.com` for the admin console. 
 
 ```bash
-$ curl -fsSL https://raw.githubusercontent.com/wls-eng/arm-oraclelinux-wls-cluster/2020-12-02-01-Q4/cli-scripts/custom-dns-alias-cli.sh \
+$ curl -fsSL {{ site.data.var.artifactsLocationBase }}{{ pageDir }}/{{ site.data.var.artifactsLocationTag }}/cli-scripts/custom-dns-alias-cli.sh \
   | /bin/bash -s -- \
   --resource-group `yourResourceGroup` \
   --admin-vm-name adminVM \
   --admin-console-label admin \
   --artifact-location {{ armTemplateBasePath }} \
   --location eastus \
-  --zone-name consoto.com \
-  --gateway-label applications
+  --zone-name contoso.com
 ```
 
 An example output:
@@ -162,17 +152,13 @@ Action required:
 
 Custom DNS alias:
     Resource group: haiche-dns-doc
-    WebLogic Server Administration Console URL: http://admin.consoto.com:7001/console
-    WebLogic Server Administration Console secured URL: https://admin.consoto.com:7002/console
-  
-
-    Application Gateway URL: http://applications.consoto.com
-    Application Gateway secured URL: https://applications.consoto.com
+    WebLogic Server Administration Console URL: http://admin.contoso.com:7001/console
+    WebLogic Server Administration Console secured URL: https://admin.contoso.com:7002/console
 ```
 
 **Note:** The DNS aliases are not accessible now, you must perform Azure DNS delegation after the deployment. Follow [Delegation of DNS zones with Azure DNS](https://aka.ms/dns-domain-delegation) to complete the Azure DNS delegation.
 
 
-## Verify the Custome Alias
+## Verify the Custom Alias
 
 Access the URL from output to verify if the custom alias works.
