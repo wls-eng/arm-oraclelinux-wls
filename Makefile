@@ -22,3 +22,4 @@ all:
 	cp subtemplate-src/dynamic-cluster-elkNestedTemplate.md dynamic-cluster/elkNestedTemplate.md
 	cp subtemplate-src/dynamic-cluster-nsgRulesTemplate.md dynamic-cluster/nsgRulesTemplate.md
 	cp subtemplate-src/dynamic-cluster-ohsNestedTemplate.md dynamic-cluster/ohsNestedTemplate.md
+	cp subtemplate-src/dynamic-cluster-customDNSTemplate.md dynamic-cluster/customDNSTemplate.md
