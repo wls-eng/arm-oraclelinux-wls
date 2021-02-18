@@ -18,6 +18,16 @@ The template will be applied to an existing {{ site.data.var.wlsFullBrandName }}
 
 Refer to [Azure Active Directory(AAD) LDAP Instance](aadNestedTemplate.html#azure-active-directory-ldap-instance).
 
+### Administering Security for Oracle WebLogic Server & Configuring KeyStores
+Refer to [Configuring Keystores](https://docs.oracle.com/en/middleware/fusion-middleware/weblogic-server/12.2.1.4/secmg/identity_trust.html).
+
+### Generate Base64 string for a given ssl certificate/keystore file
+
+Use the following command to generate a Base64 string for a given ssl certificate/keystore file, to be used as input in the parameters JSON file
+
+<pre>base64 /my/path/your-certificate.cer -w 0 >temp.txt</pre>
+
+
 ## Prepare the Parameters JSON file
 
 You must construct a parameters JSON file containing the parameters to the add-node ARM template.  See [Create Resource Manager parameter file](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/parameter-files) for background information about parameter files.   You must specify the information of the existing {{ site.data.var.wlsFullBrandName }} and nodes that to be added. This section shows how to obtain the values for the following required properties.
@@ -120,6 +130,47 @@ You must construct a parameters JSON file containing the parameters to the add-n
  <tr>
   <td><code>wlsPassword</code></td>
   <td colspan="2">Must be the same value provided at deployment time.</td>
+ </tr>
+ <tr>
+  <td rowspan="10"><code>customSSLSettings</code></td>
+  <td colspan="2">Optional. <a href="https://docs.microsoft.com/en-us/azure/architecture/building-blocks/extending-templates/objects-as-parameters">JSON object type</a>. You can specify this parameters for configuring Custom SSL Settings for WebLogic Administration Server. If <code>enable</code> is true, must specify other properties. See the page <a href="https://docs.oracle.com/en/middleware/fusion-middleware/weblogic-server/12.2.1.4/secmg/identity_trust.html">Administering Security for Oracle WebLogic Server and Configuring Keystores</a> for further information.</td>
+ </tr>
+ <tr>
+  <td><code>enable</code></td>
+  <td>If <code>enable</code> is true, must specify all properties of the <code>customSSLSettings</code>.
+      &nbsp;Set to <code>false</code> by default.</td>
+ </tr>
+ <tr>
+  <td><code>customIdentityKeyStoreBase64String</code></td>
+  <td>The based64 string of the custom identity keystore file that will be configured in the WebLogic Administration Server to enable SSL connection.</td>
+ </tr>
+ <tr>
+  <td><code>customIdentityKeyStorePassPhrase</code></td>
+  <td>The identity keystore pass phrase</td>
+ </tr>
+ <tr>
+  <td><code>customIdentityKeyStoreType</code></td>
+  <td>Identity Key Store Type. This can be either JKS or PKCS12</td>
+ </tr>
+ <tr>
+  <td><code>customTrustKeyStoreBase64String</code></td>
+  <td>The based64 string of the custom trust keystore file that will be configured in the WebLogic Administration Server to enable SSL connection.</td>
+ </tr>
+ <tr>
+  <td><code>customTrustKeyStorePassPhrase</code></td>
+  <td>The trust keystore pass phrase</td>
+ </tr>
+  <tr>
+  <td><code>customTrustKeyStoreType</code></td>
+  <td>Trust Key Store Type. This can be either JKS or PKCS12</td>
+ </tr>
+ <tr>
+  <td><code>privateKeyAlias</code></td>
+  <td>The private key alias</td>
+ </tr>
+ <tr>
+  <td><code>privateKeyPassPhrase</code></td>
+  <td>The private Key Pass phrase.</td>
  </tr>
 </table>
 
@@ -240,7 +291,20 @@ Here is a fully filled out parameters file, with Azure Active Directory enabled.
         },
         "wlsPassword": {
             "value": "welcome1"
-        }
+        },
+        "customSSLSettings": {
+            "value": {
+                "enable": true,
+                "customIdentityKeyStoreBase64String": "/u3+7QAAAAIAAAABAAAAAQAKc2VydmV....QZL24ljJLq",
+                "customIdentityKeyStorePassPhrase": "mypassword",
+                "customIdentityKeyStoreType": "JKS",
+                "customTrustKeyStoreBase64String": "/u3+7QAAAAIAAAABAAAAAgAJdHJ1c3R....Td4bYVnONyS0PC7k=",
+                "customTrustKeyStorePassPhrase": "mypassword",
+                "customTrustKeyStoreType": "JKS",
+                "privateKeyAliasSecret": "servercert",
+                "privateKeyPassPhraseSecret": "mypassword"
+            }
+       }
     }
 }
 ```
@@ -461,6 +525,20 @@ This is an example output of successful deployment.  Look for `"provisioningStat
       "wlsUserName": {
         "type": "String",
         "value": "weblogic"
+      },
+      "customSSLSettings": {
+        "type": "Object",
+        "value": {
+           "enable": true,
+           "customIdentityKeyStoreBase64String": "/u3+7QAAAAIAAAABAAAAAQAKc2VydmV....QZL24ljJLq",
+           "customIdentityKeyStorePassPhrase": "mypassword",
+           "customIdentityKeyStoreType": "JKS",
+           "customTrustKeyStoreBase64String": "/u3+7QAAAAIAAAABAAAAAgAJdHJ1c3R....Td4bYVnONyS0PC7k=",
+           "customTrustKeyStorePassPhrase": "mypassword",
+           "customTrustKeyStoreType": "JKS",
+           "privateKeyAliasSecret": "servercert",
+           "privateKeyPassPhraseSecret": "mypassword"
+        }
       }
     },
     "parametersLink": null,

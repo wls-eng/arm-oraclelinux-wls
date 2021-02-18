@@ -18,7 +18,6 @@ all:
 	cp subtemplate-src/dbTemplate.md dynamic-cluster
 	cp subtemplate-src/dynamic-cluster-aadNestedTemplate.md dynamic-cluster/aadNestedTemplate.md
 	cp subtemplate-src/dynamic-cluster-addnode.md dynamic-cluster/addnode.md
-	cp subtemplate-src/dynamic-cluster-customDNSTemplate.md dynamic-cluster/customDNSTemplate.md
 	cp subtemplate-src/dynamic-cluster-deletenode.md dynamic-cluster/deletenode.md
 	cp subtemplate-src/dynamic-cluster-elkNestedTemplate.md dynamic-cluster/elkNestedTemplate.md
 	cp subtemplate-src/dynamic-cluster-nsgRulesTemplate.md dynamic-cluster/nsgRulesTemplate.md
