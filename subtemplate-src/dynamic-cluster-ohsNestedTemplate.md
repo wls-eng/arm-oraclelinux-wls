@@ -25,15 +25,19 @@ Note that such self-signed certificates created should only be used for testing 
 
 * JKS format certificate
  
- <code> keytool -genkey -keyalg RSA -alias selfsigned -keystore keyStore.jks -storepass password -validity 360 -keysize 2048 </code>
+ <code> keytool -genkey -keyalg RSA -alias selfsigned -keystore keyStore.jks -storepass password -validity 360 -keysize 2048  -keypass password -storetype jks </code>
  
  Provide all information prompted and store in a file.
 
 * PKCS12 format certificate
 
-<code> openssl req -newkey rsa:2048 -x509 -keyout key.pem -out out.pem -days 3650 </code>
+<code> openssl genrsa 2048 > private.pem </code>
 
-Provide all information prompted and store in a file.
+<code> openssl req -x509 -new -key private.pem -out public.pem </code>
+
+Provide all information prompted.
+
+<code> openssl pkcs12 -export -in public.pem -inkey private.pem -out mycert.pfx </code>
 
 ## Prepare the Parameters JSON file
 You must construct a parameters JSON file containing the parameters to the OHS ARM template.  See [Create Resource Manager parameter file](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/parameter-files) for background information about parameter files.   We must specify the information of the existing SSL certificate. This section shows how to obtain the values for the following required properties.
@@ -74,7 +78,7 @@ This value must be the following.
 ### `ohsSSLKeystoreData`
 Use base64 to encode your existing SSL certificate.
 
-base64 your-JKS/PKCS12-certificate-contents -w 0 > temp.txt
+<code> base64 your-JKS/PKCS12-certificate-contents -w 0 > temp.txt </code>
 
 Use temp.txt contents to set the value for ohsSSLKeystoreData
 
