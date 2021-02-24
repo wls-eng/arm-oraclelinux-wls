@@ -255,7 +255,7 @@ jobs:
             az group delete --yes --no-wait --verbose --name $resourceGroup
 
   summary:
-    if: always()
+    if: ${{!(github.event_name == 'schedule' && github.repository_owner != 'wls-eng')}}
     needs: deploy
     runs-on: ubuntu-latest
     steps:
