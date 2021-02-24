@@ -16,7 +16,14 @@ Same as name.
 <h2>Description</h2>
 
 <pre>
-The VM instance created by this offer is suitable for customers that require very highly customized Azure deployments. Users of this offer are expected to be familiar with WebLogic Server administration. The software stack in the VM is specified in the offer title. The VM is installed with the specified GNU/Linux distribution, Oracle JDK version, and WebLogic Server version. The relevant directories are listed here.
+
+Oracle WebLogic Server (WLS) is a scalable, enterprise-ready Java application server.
+
+Azure Oracle WebLogic Server (WLS) offers enable you to embrace cloud computing by providing greater choice and flexibility for WLS migration including lift and shift of your Java applications to Azure Virtual Machines with the smallest effort and biggest impact.  
+
+The VM instance created by this offer is suitable for customers that require very highly customized Azure WLS deployments. Users of this offer are expected to be familiar with WebLogic Server administration. The software stack in the VM is specified in the offer title.
+
+The VM is installed with the specified GNU/Linux distribution, Oracle JDK version, and WebLogic Server version. The relevant directories are listed here:
 
 ORACLE_HOME /u01/app/wls/install/oracle/middleware/oracle_home
 
@@ -24,9 +31,7 @@ WL_HOME /u01/app/wls/install/oracle/middleware/oracle_home/wlserver
 
 JAVA_HOME /u01/app/jdk/
 
-There is no pre-created domain. During VM creation, you are asked to provide a username and SSH key or credentials for the admin account. After logging in with this account, do sudo su - oracle to get write access to the relevant directories.
-
-For instructions on creating a WebLogic domain given the above directories visit Oracle Fusion Middleware documentation in the Useful Links section below. Once there, select the appropriate version of WebLogic Server from the drop-down menu. On the main page for the selected version, select Install, Patch and Upgrade, then find and follow the domain creation instructions.
+There is no pre-created domain. During VM creation, you are asked to provide a username and SSH key or credentials for the admin account. After logging in with this account, do sudo su - oracle to get write access to the relevant directories. For instructions on creating a WebLogic domain given the above directories visit Oracle Fusion Middleware documentation in the Useful Links section below. Once there, select the appropriate version of WebLogic Server from the drop-down menu. On the main page for the selected version, select Install, Patch and Upgrade, then find and follow the domain creation instructions.
 
 In addition to these base images, the offer also includes four different solution templates to meet different scenarios: single node without an admin server, single node with an admin server, cluster and dynamic cluster. These offers are linked in the Useful links section at the bottom of this page. You should feel free to give them a try, the offers are available free of charge.
 
