@@ -19,28 +19,30 @@ The template will be applied to an existing {{ site.data.var.wlsFullBrandName }}
 
 Oracle HTTP Server serves as the front end load balancer for the {{ site.data.var.wlsFullBrandName }} dynamic cluster, hence it must be provided with a certificate to allow browsers to connect via SSL.
 
-#### Creating Self-signed certificates
-This section provides how to create self-signed certificates. The example provided below is one of the ways to create self-signed certificates.
-Note that such self-signed certificates created should only be used for testing purpose and it is not recommended for production purpose.
+#### Creating Self-signed certificate
+
+This section describes how to create a self-signed certificate in the format expected by Oracle HTTP server. The example provided below is one of the ways to create self-signed certificates. Note that such self-signed certificates created should only be used for testing purpose and it is not recommended for production purpose.
 
 * JKS format certificate
+
+   ```bash
+   keytool -genkey -keyalg RSA -alias selfsigned -keystore keyStore.jks -storepass password -validity 360 -keysize 2048
+   ```
  
- <code> keytool -genkey -keyalg RSA -alias selfsigned -keystore keyStore.jks -storepass password -validity 360 -keysize 2048  -keypass password -storetype jks </code>
- 
- Provide all information prompted and store in a file.
+   Provide all information prompted and store in a file.
 
 * PKCS12 format certificate
 
-<code> openssl genrsa 2048 > private.pem </code>
+   ```bash
+   openssl req -newkey rsa:2048 -x509 -keyout key.pem -out out.pem -days 3650
+   ```
 
-<code> openssl req -x509 -new -key private.pem -out public.pem </code>
-
-Provide all information prompted.
-
-<code> openssl pkcs12 -export -in public.pem -inkey private.pem -out mycert.pfx </code>
+   Provide all information prompted and store in a file.
 
 ## Prepare the Parameters JSON file
+
 You must construct a parameters JSON file containing the parameters to the OHS ARM template.  See [Create Resource Manager parameter file](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/parameter-files) for background information about parameter files.   We must specify the information of the existing SSL certificate. This section shows how to obtain the values for the following required properties.
+
 | Parameter Name | Explanation |
 |----------------|-------------|
 | `_artifactsLocation`| See below for details. |

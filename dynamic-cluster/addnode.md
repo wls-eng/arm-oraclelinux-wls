@@ -19,6 +19,7 @@ The template will be applied to an existing {{ site.data.var.wlsFullBrandName }}
 Refer to [Azure Active Directory(AAD) LDAP Instance](aadNestedTemplate.html#azure-active-directory-ldap-instance).
 
 ### Administering Security for Oracle WebLogic Server & Configuring KeyStores
+
 Refer to [Configuring Keystores](https://docs.oracle.com/en/middleware/fusion-middleware/weblogic-server/12.2.1.4/secmg/identity_trust.html).
 
 ### Generate Base64 string for a given ssl certificate/keystore file
