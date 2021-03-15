@@ -1,0 +1,108 @@
+name: Restrict access to WLS ports
+on:
+  workflow_dispatch:
+    inputs:
+      resourceGroup:
+        description: 'Specify a resource group name.'
+        required: true
+      isClusterOffer:
+        description: 'Set to true if you are working with configured cluster offer.'
+        required: true
+        default: 'false'
+      deny: 
+        description: 'true: deny rule WebLogicPorts. false: allow rule WebLogicPorts. '
+        required: true
+        default: 'true'
+      ipAddress:
+        description: 'Provide a comma-separated list of IP addresses or address ranges using either IPv4 or IPv6.'
+        required: false
+
+jobs:
+  deny-weblogic-ports:
+    if: ${{ github.event.inputs.deny == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: azure/login@v1
+        id: azure-login
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Check if rule WebLogicPorts exists
+        run: |
+          echo resource group: ${{ github.event.inputs.resourceGroup }}
+          az network nsg rule show -g ${{ github.event.inputs.resourceGroup }} --nsg-name wls-nsg --name WebLogicPorts
+
+      - name: Deny WebLogicPorts for admin/dynamic cluster offer
+        if: ${{ github.event.inputs.isClusterOffer != 'true' }}
+        run: |
+          az network nsg rule update -g ${{ github.event.inputs.resourceGroup }} --name WebLogicPorts --nsg-name wls-nsg --access Deny
+
+      - name: Deny WebLogicPorts for cluster offer
+        if: ${{ github.event.inputs.isClusterOffer == 'true' }}
+        run: |
+          echo create rule AllowGatewayManager
+          az network nsg rule create --name AllowGatewayManager \
+                           --nsg-name wls-nsg \
+                           --priority 330 \
+                           --resource-group ${{ github.event.inputs.resourceGroup }} \
+                           --access  Allow \
+                           --direction Inbound \
+                           --destination-port-ranges 65200-65535 \
+                           --destination-address-prefixes '*' \
+                           --source-address-prefixes GatewayManager \
+                           --source-port-ranges '*'
+
+          echo modify rule WebLogicPorts by removing range 65200-65535
+          az network nsg rule update -g ${{ github.event.inputs.resourceGroup }} \
+            --name WebLogicPorts --nsg-name wls-nsg \
+            --access Deny \
+            --destination-port-ranges 80 443 7001-9000 5556
+
+  allow-specified-ip:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.deny == 'false' && github.event.inputs.IpAddress != null }}
+    steps: 
+      - uses: azure/login@v1
+        id: azure-login
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Check if rule WebLogicPorts exists
+        run: |
+          echo resource group: ${{ github.event.inputs.resourceGroup }}
+          az network nsg rule show -g ${{ github.event.inputs.resourceGroup }} --nsg-name wls-nsg --name WebLogicPorts
+
+      - name: Restrict IP access to WebLogicPorts for admin/dynamic cluster offer
+        if: ${{ github.event.inputs.isClusterOffer != 'true' }}
+        run: |
+          ipAddress=`echo "${{ github.event.inputs.ipAddress }}" | sed 's/,/ /g'`
+          echo ${ipAddress}
+          az network nsg rule update -g ${{ github.event.inputs.resourceGroup }} \
+            --name WebLogicPorts \
+            --nsg-name wls-nsg \
+            --access Allow \
+            --source-address-prefixes ${ipAddress}
+
+
+      - name: Restrict IP access to WebLogicPorts for cluster offer
+        if: ${{ github.event.inputs.isClusterOffer == 'true' }}
+        run: |
+          echo create rule AllowGatewayManager
+          az network nsg rule create --name AllowGatewayManager \
+                           --nsg-name wls-nsg \
+                           --priority 330 \
+                           --resource-group ${{ github.event.inputs.resourceGroup }} \
+                           --access  Allow \
+                           --direction Inbound \
+                           --destination-port-ranges 65200-65535 \
+                           --destination-address-prefixes '*' \
+                           --source-address-prefixes GatewayManager \
+                           --source-port-ranges '*'
+
+          echo modify rule WebLogicPorts by removing range 65200-65535
+          ipAddress=`echo "${{ github.event.inputs.ipAddress }}" | sed 's/,/ /g'`
+          echo ${ipAddress}
+          az network nsg rule update -g ${{ github.event.inputs.resourceGroup }} \
+            --name WebLogicPorts --nsg-name wls-nsg \
+            --access Allow \
+            --destination-port-ranges 80 443 7001-9000 5556 \
+            --source-address-prefixes ${ipAddress}
+
