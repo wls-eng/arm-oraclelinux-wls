@@ -213,6 +213,17 @@ This value must be the following.
 {{ armTemplateAddNodeBasePath }}
 ```
 
+### Enable SSH Authentication to VMs
+If the cluster was deployed with SSH Authentication to VMs enabled, add this variable to your parameter file and fill in the base64 decoded public SSH key string to the `adminPasswordOrKey` field:
+```
+        "authenticationType": {
+            "value": "sshPublicKey"
+        },
+        "adminPasswordOrKey": {
+            "value": "ssh-rsa ...."
+        },
+```
+
 ### Enable coherence
 If `enableCoherence` is `true`, the template will create Azure resources to host new managed servers, and configure new application nodes to Coherence cluster. If your cluster is not Coherence cluster, please do not set this parameter `true`.
 
@@ -343,8 +354,8 @@ Here is a fully filled out parameters file, with Azure Active Directory enabled.
                "customTrustKeyStoreBase64String": "/u3+7QAAAAIAAAABAAAAAgAJdHJ1c3R....Td4bYVnONyS0PC7k=",
                "customTrustKeyStorePassPhrase": "mypassword",
                "customTrustKeyStoreType": "JKS",
-               "privateKeyAliasSecret": "servercert",
-               "privateKeyPassPhraseSecret": "mypassword"
+               "privateKeyAlias": "servercert",
+               "privateKeyPassPhrase": "mypassword"
             }
         }
     }
