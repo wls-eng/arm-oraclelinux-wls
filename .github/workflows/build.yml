@@ -14,6 +14,8 @@ env:
   nsg: wls-nsg
   resourceGroupPrefix: wls-${{ github.run_id }}-${{ github.run_number }}
   wlsPassword: ${{ secrets.WLS_PASSWORD }}
+  refArmttk: d97aa57d259e2fc8562e11501b1cf902265129d9
+  refJavaee: 6addd99d8bc3f472e040f11c053a37e1ac370229
     
 jobs:
   preflight:
@@ -25,14 +27,14 @@ jobs:
         with:
           repository: Azure/azure-javaee-iaas
           path: azure-javaee-iaas
-          ref: 6807e2ae3e8a8492edf211b9f4f0b7ed3a2a29e7
+          ref: ${{ env.refJavaee }}
       - name: Checkout Azure Resource Manager Template Toolkit 
         id: checkout-arm-ttk
         uses: actions/checkout@v2
         with:
           repository: Azure/arm-ttk
           path: arm-ttk
-          ref: 1b58e01c5f201a819d795dbc3576c2fd7cbed821
+          ref: ${{ env.refArmttk }}
       - name: Checkout arm-oraclelinux-wls
         id: checkout-arm-oraclelinux-wls
         uses: actions/checkout@v2
